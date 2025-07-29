@@ -44,7 +44,7 @@ class VacationController extends Controller
         if (!$vacation) {
             return $this->setCode(404)->setMessage(__('messages.not_found'))->send();
         }
-        if($vacation->statu_id == Statu::where('name_en','Approved')->first()->id)
+        if($vacation->statu_id === Statu::where('name_en','Approved')->first()->id)
         {
             return $this->setCode(404)->setMessage(__('messages.forbiden'))->send();
         }

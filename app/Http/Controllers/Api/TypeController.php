@@ -10,7 +10,7 @@ use App\Http\Controllers\Controller;
 class TypeController extends Controller
 {
     use ApiResponseHelper;
-    public function index ()
+    public function index()
     {
         $types = Type::all();
         return $this->setCode(200)->setMessage('Success')->setData($types)->send();

@@ -10,13 +10,14 @@ class Reason extends Model
     use HasFactory;
 
 
-    protected $fillable = ['name','kind'];
+    protected $fillable = ['name', 'kind'];
 
-    public function excuses ()
+    public function excuses()
     {
         return $this->hasMany('App\Models\Excuse');
     }
-    public function vacations ()
+
+    public function vacations()
     {
         return $this->hasMany('App\Models\Vacation');
     }

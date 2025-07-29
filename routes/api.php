@@ -14,16 +14,19 @@ use App\Http\Controllers\Api\VacationController;
 Route::group(['middleware' => ["SetLang"]], function () {
 
     //Login
-    Route::post('/user/login', [AuthController::class, 'Login']);
+    Route::post('user/login', [AuthController::class, 'Login']);
 
     //types
-    Route::get('/types', [TypeController::class, 'index']);
+    Route::get('types', [TypeController::class, 'index']);
+
     //reasons
-    Route::get('/reasons', [ReasonController::class, 'index']);
+    Route::get('reasons', [ReasonController::class, 'index']);
+
     //Departments
-    Route::get('/departments', [DepartmentController::class, 'index']);
+    Route::get('departments', [DepartmentController::class, 'index']);
+
     //Departments
-    Route::get('/department/{id}', [DepartmentController::class, 'show']);
+    Route::get('department/{id}', [DepartmentController::class, 'show']);
 
     //Reasons
     Route::get('/home', [HomeController::class, 'home']);
@@ -32,17 +35,17 @@ Route::group(['middleware' => ["SetLang"]], function () {
     Route::group(['middleware' => ["auth:sanctum"]], function () {
 
         // Auth
-        Route::post('/user/update', [AuthController::class, 'update']);
-        Route::post('/logout', [AuthController::class, 'logout']);
+        Route::post('user/update', [AuthController::class, 'update']);
+        Route::post('logout', [AuthController::class, 'logout']);
 
         // Excuses
-        Route::post('/user/make/excuse', [ExcuseController::class, 'store']);
-        Route::post('/user/excuses', [ExcuseController::class, 'index']);
+        Route::post('user/make/excuse', [ExcuseController::class, 'store']);
+        Route::post('user/excuses', [ExcuseController::class, 'index']);
 
         // Vacations
-        Route::post('/user/make/vacation', [VacationController::class, 'store']);
-        Route::post('/user/vacations', [VacationController::class, 'index']);
-        Route::get('/user/delete/vacation/{id}', [VacationController::class, 'delete']);
+        Route::post('user/make/vacation', [VacationController::class, 'store']);
+        Route::post('user/vacations', [VacationController::class, 'index']);
+        Route::get('user/delete/vacation/{id}', [VacationController::class, 'delete']);
 
     });
 

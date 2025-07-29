@@ -10,7 +10,8 @@ use App\Models\Reason;
 class ReasonController extends Controller
 {
     use ApiResponseHelper;
-    public function index ()
+
+    public function index()
     {
         $reasons = Reason::all();
         return $this->setCode(200)->setMessage('Success')->setData($reasons)->send();
