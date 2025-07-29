@@ -1,0 +1,386 @@
+:root {
+    --sidebar-color: linear-gradient(
+        90deg,
+        rgba(131, 58, 180, 1) 0%,
+        rgba(29, 184, 253, 1) 100%,
+        rgba(252, 176, 69, 1) 100%
+    );
+    --secondary-color: linear-gradient(
+        0deg,
+        rgba(58, 136, 180, 1) 0%,
+        rgba(42, 133, 24, 1) 100%,
+        rgba(252, 176, 69, 1) 100%
+    );
+    --red-color: linear-gradient(
+        0deg,
+        rgba(80, 0, 0, 1) 0%,
+        rgba(58, 136, 180, 1) 100%
+    );
+    --baby-blue: linear-gradient(
+        0deg,
+        rgb(6, 115, 117) 0%,
+        rgba(253, 187, 45, 1) 100%
+    );
+    --burble-color: linear-gradient(
+        0deg,
+        rgba(82, 22, 161, 1) 0%,
+        rgb(105, 14, 0) 100%
+    );
+}
+.pages_heading {
+    font-family: "Courgette", serif;
+    font-weight: 700;
+    font-style: normal;
+    /* color: #593838; */
+}
+.title-box {
+    padding: 10px;
+    background-color: #ffffff;
+    box-shadow: 0 0 10px rgb(16 91 0 / 20%);
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+}
+.blue-green-bg {
+    background: var(--secondary-color);
+    color: white !important;
+}
+.red-blue-bg {
+    background: var(--red-color);
+    color: white !important;
+}
+.baby-blue-bg {
+    background: var(--baby-blue);
+    color: white !important;
+}
+.bg-main-color {
+    background: var(--sidebar-color) !important;
+    color: white !important;
+}
+.bg-burble-color {
+    background: var(--burble-color) !important;
+    color: white !important;
+}
+
+.long-cell {
+    max-width: 150px; /* Set a maximum width */
+    white-space: nowrap; /* Prevent the text from wrapping */
+    overflow: hidden; /* Hide overflow text */
+    text-overflow: ellipsis; /* Show ellipsis (...) when text is truncated */
+    text-align: center;
+}
+/* Sidebar styles */
+
+.navbar-toggler {
+    border: none; /* Remove border if necessary */
+}
+
+.navbar-toggler-icon {
+    font-size: 24px;
+    color: #fff; /* Make sure the icon is visible */
+}
+.sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 250px;
+    height: 100%;
+    background-color: transparent;
+    color: #fff;
+    transition: width 0.3s;
+    max-height: 100vh;
+    /* Adjust the height */
+    overflow-y: auto;
+    padding-right: 10px;
+    /* Avoid scrollbar overlaying content */
+}
+.logo_cont {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.dis_none {
+    display: none;
+}
+.sidbar-toggle-btn {
+    margin-right: 50px;
+}
+
+.sidebar::-webkit-scrollbar {
+    width: 6px;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+}
+
+.sidebar ul.nav-treeview {
+    display: none;
+    padding-left: 20px;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Show the nested ul when the parent li is clicked */
+.sidebar li.active > ul.nav-treeview {
+    display: block;
+}
+
+/* Transition for smooth appearance */
+.sidebar ul.nav-treeview li {
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+}
+
+/* On show, make the items visible and smoothly appear */
+.sidebar li.active ul.nav-treeview li {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.sidebar.collapsed {
+    width: 65px;
+}
+
+.sidebar .nav-link {
+    color: #fff;
+}
+
+.sidebar .nav-link i {
+    margin-right: 10px;
+}
+
+.sidebar.collapsed .nav-link i {
+    margin-right: 0;
+}
+
+.sidebar.collapsed .nav-link span {
+    display: none;
+}
+
+.main-content {
+    margin-top: 50px;
+    margin-left: 250px;
+    transition: margin-left 0.3s;
+}
+
+.main-content.collapsed {
+    margin-left: 65px;
+}
+
+.navbar .toggle-btn {
+    color: #000000;
+}
+
+.img-circle {
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+    /* border: 1px solid white; */
+}
+
+.nav-item .fa-angle-left {
+    transition: transform 0.3s ease;
+    margin-left: 40px;
+}
+
+/* Rotate the arrow down when the submenu is open */
+.nav-item.active .fa-angle-left {
+    transform: rotate(90deg);
+    /* Rotates arrow downwards */
+}
+
+/* When submenu is open, rotate arrow */
+.nav-item.active > a .fa-angle-left {
+    transform: rotate(-90deg);
+}
+.nav-treeview {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s ease;
+}
+.nav-item.active .nav-treeview {
+    display: block;
+}
+
+/* END SideBar  */
+/* ____________________________________________________________________________________ */
+
+.main_form {
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px,
+        rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
+    padding: 20px;
+}
+
+.createBtn a {
+    text-decoration: none;
+    color: green;
+}
+.createBtn:hover a {
+    color: white;
+    font-weight: bold;
+}
+.long-cell {
+    max-width: 150px; /* Set a maximum width */
+    white-space: nowrap; /* Prevent the text from wrapping */
+    overflow: hidden; /* Hide overflow text */
+    text-overflow: ellipsis; /* Show ellipsis (...) when text is truncated */
+}
+.table-responsive {
+    overflow-x: auto; /* Allows horizontal scroll if table overflows */
+}
+
+/* Ensure the table fits within the main content */
+table {
+    width: 100%; /* Table will expand to fill available width */
+}
+
+.table td,
+.table th {
+    white-space: nowrap; /* Prevent text from wrapping in table cells */
+}
+
+.small-box {
+    border-radius: 0.25rem;
+    box-shadow: 0 0 1px rgba(0, 0, 0, 0.125), 0 1px 3px rgba(0, 0, 0, 0.2);
+    display: block;
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.small-box > .inner {
+    padding: 10px;
+}
+
+.small-box > .small-box-footer {
+    background: rgba(0, 0, 0, 0.1);
+    color: rgba(255, 255, 255, 0.8);
+    display: block;
+    padding: 3px 0;
+    position: relative;
+    text-align: center;
+    text-decoration: none;
+    z-index: 10;
+}
+
+.small-box > .small-box-footer:hover {
+    background: rgba(0, 0, 0, 0.15);
+    color: #ffffff;
+}
+
+.small-box h3 {
+    font-size: 2.2rem;
+    font-weight: bold;
+    margin: 0 0 10px 0;
+    padding: 0;
+    white-space: nowrap;
+}
+
+@media (min-width: 992px) {
+    .col-xl-2 .small-box h3,
+    .col-lg-2 .small-box h3,
+    .col-md-2 .small-box h3 {
+        font-size: 1.6rem;
+    }
+    .col-xl-3 .small-box h3,
+    .col-lg-3 .small-box h3,
+    .col-md-3 .small-box h3 {
+        font-size: 1.6rem;
+    }
+}
+
+@media (min-width: 1200px) {
+    .col-xl-2 .small-box h3,
+    .col-lg-2 .small-box h3,
+    .col-md-2 .small-box h3 {
+        font-size: 2.2rem;
+    }
+    .col-xl-3 .small-box h3,
+    .col-lg-3 .small-box h3,
+    .col-md-3 .small-box h3 {
+        font-size: 2.2rem;
+    }
+}
+
+.small-box p {
+    font-size: 1rem;
+}
+
+.small-box p > small {
+    color: #f8f9fa;
+    display: block;
+    font-size: 0.9rem;
+    margin-top: 5px;
+}
+
+.small-box h3,
+.small-box p {
+    z-index: 5;
+}
+
+.small-box .icon {
+    color: rgba(0, 0, 0, 0.15);
+    z-index: 0;
+}
+
+.small-box .icon > i {
+    font-size: 90px;
+    position: absolute;
+    right: 15px;
+    top: 15px;
+    transition: all 0.3s linear;
+}
+
+.small-box .icon > i.fa,
+.small-box .icon > i.fas,
+.small-box .icon > i.far,
+.small-box .icon > i.fab,
+.small-box .icon > i.glyphicon,
+.small-box .icon > i.ion {
+    font-size: 70px;
+    top: 20px;
+}
+
+.small-box:hover {
+    text-decoration: none;
+}
+
+.small-box:hover .icon > i {
+    font-size: 95px;
+}
+
+.small-box:hover .icon > i.fa,
+.small-box:hover .icon > i.fas,
+.small-box:hover .icon > i.far,
+.small-box:hover .icon > i.fab,
+.small-box:hover .icon > i.glyphicon,
+.small-box:hover .icon > i.ion {
+    font-size: 75px;
+}
+
+@media (max-width: 767.98px) {
+    .small-box {
+        text-align: center;
+    }
+    .small-box .icon {
+        display: none;
+    }
+    .small-box p {
+        font-size: 12px;
+    }
+}
+
+.report-box-cont {
+    display: flex;
+    flex-wrap: wrap;
+    border: 1px solid rgb(179, 179, 179);
+    padding: 30px;
+    background-color: #ddd;
+}
+.report-box {
+    width: 12rem;
+    margin-left: 20px;
+}
