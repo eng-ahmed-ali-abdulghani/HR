@@ -8,27 +8,46 @@ use Illuminate\Database\Eloquent\Model;
 class Excuse extends Model
 {
     use HasFactory;
-    protected $fillable = ['user_id', 'date', 'hours', 'type_id', 'reason_id','actor_id','note','leader_approve','statu_id','mission'];
 
-    public function user()
+    // السماح بالتعبئة الجماعية لهذه الحقول
+    protected $fillable = [
+        'excuse_datetime',
+        'excuse_duration_hours',
+        'employee_id',
+        'excuse_type_id',
+        'reason',
+        'expected_attendance_time',
+        'submitted_by_id',
+        'notes',
+        'leader_approval_status',
+        'status',
+        'is_due_to_official_mission',
+    ];
+
+    // تحويل بعض الحقول تلقائيًا لـ Carbon
+    protected $casts = [
+        'excuse_datetime' => 'datetime',
+        'expected_attendance_time' => 'datetime',
+        'leader_approval_status' => 'boolean',
+        'is_due_to_official_mission' => 'boolean',
+    ];
+
+
+    // الموظف صاحب العذر
+    public function employee()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'employee_id');
     }
+
+    // نوع العذر
     public function type()
     {
-        return $this->belongsTo(Type::class);
-    }
-    public function reason()
-    {
-        return $this->belongsTo(Reason::class);
-    }
-    public function actor()
-    {
-        return $this->belongsTo(User::class, 'actor_id');
-    }
-    public function statu()
-    {
-        return $this->belongsTo(Statu::class);
+        return $this->belongsTo(Type::class, 'excuse_type_id');
     }
 
+    // الشخص الذي قدّم العذر (HR أو مدير)
+    public function submittedBy()
+    {
+        return $this->belongsTo(User::class, 'submitted_by_id');
+    }
 }

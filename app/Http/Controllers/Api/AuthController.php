@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Requests\LoginRequest;
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Services\UserService;
 use App\Helpers\ApiResponseHelper;
-use Illuminate\Support\Facades\App;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Requests\Api\LoginRequest;
 use App\Http\Requests\Api\UpdateUserRequest;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
@@ -17,19 +17,17 @@ class AuthController extends Controller
 {
     use ApiResponseHelper;
 
-    public function Login(Request $request)
+    public function Login(LoginRequest $request)
     {
-        if (!Auth::attempt(['phone' => $request->phone, 'password' => $request->password])) {
+        $data = $request->validated();
+        if (!Auth::attempt(['phone' => $$data['phone'], 'password' => $data['phone']])) {
             return response()->json(['status' => false, 'message' => (__('auth.failed')), 'code' => 401], 401);
         }
         $user = User::where('phone', $request->phone)->first();
-        $token = $user->createToken("API TOKEN")->plainTextToken;
-        $user->company_name = $user->company ? $user->company->name : null;
-        $user->department_name = $user->department ? $user->department->name : null;
-        $user->shift_start = $user->shift ? $user->shift->start : null;
-        $user->shift_end = $user->shift ? $user->shift->end : null;
-        $user->token = $token;
-        return $this->setCode(200)->setMessage('User Logeed in Successfully')->setData($user)->send();
+        return $this->setCode(200)->setMessage('User Logeed in Successfully')->setData([
+            'user' => new UserResource($user),
+            'token' => $user->createToken('auth_token')->plainTextToken
+        ])->send();
     }
 
     public function update(UpdateUserRequest $request, UserService $userService)
@@ -47,5 +45,5 @@ class AuthController extends Controller
         $user = $request->user();
         $user->tokens()->delete();
         return $this->setCode(200)->setMessage(__('auth.logout'))->send();
-    }//End Method
+    }
 }

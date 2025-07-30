@@ -9,29 +9,47 @@ class Vacation extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'day', 'date', 'type_id', 'reason_id','actor_id','alternative_id','note','leader_approve','statu_id'];
-    public function user()
+    protected $fillable = [
+        'start_date',
+        'end_date',
+        'employee_id',
+        'type_id',
+        'reason',
+        'replacement_employee_id',
+        'submitted_by_id',
+        'approved_by_id',
+        'notes',
+        'is_leader_approved',
+        'status',
+    ];
+
+    // الموظف صاحب الإجازة
+    public function employee()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'employee_id');
     }
+
+    // نوع الإجازة
     public function type()
     {
-        return $this->belongsTo(Type::class);
+        return $this->belongsTo(Type::class, 'type_id');
     }
-    public function reason()
+
+    // الموظف البديل
+    public function replacementEmployee()
     {
-        return $this->belongsTo(Reason::class);
+        return $this->belongsTo(User::class, 'replacement_employee_id');
     }
-    public function actor()
+
+    // من قدّم الطلب
+    public function submittedBy()
     {
-        return $this->belongsTo(User::class, 'actor_id');
+        return $this->belongsTo(User::class, 'submitted_by_id');
     }
-    public function alternative()
+
+    // من قام بالموافقة
+    public function approvedBy()
     {
-        return $this->belongsTo(User::class, 'alternative_id');
-    }
-    public function statu()
-    {
-        return $this->belongsTo(Statu::class);
+        return $this->belongsTo(User::class, 'approved_by_id');
     }
 }

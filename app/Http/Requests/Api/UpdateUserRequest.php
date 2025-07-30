@@ -20,12 +20,12 @@ class UpdateUserRequest extends FormRequest
 
     public function rules(): array
     {
-            return [
-                'name' => 'nullable|string|max:100',
-                'email' => 'nullable|max:100',
-                'password' => 'nullable|string',
-                'phone' => 'nullable','max:12','min:11','unique:users,phone,except,id',
-                'photo'=> 'nullable|file|image'
+        return [
+            'name' => 'nullable|string|max:100',
+            'email' => 'nullable|max:100',
+            'password' => 'nullable|string',
+            'phone' => 'nullable', 'max:12', 'min:11', 'unique:users,phone,except,id',
+            'photo' => 'nullable|file|image'
         ];
     }
 }

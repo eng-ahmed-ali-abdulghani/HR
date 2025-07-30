@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Models\Statu;
+use App\Models\Status;
 use App\Models\Excuse;
 use App\Helpers\ApiResponseHelper;
 use App\Http\Resources\ExcuseResource;
@@ -12,7 +12,7 @@ class ExcuseService{
     use ApiResponseHelper;
     public function MakeExcuse($request)
     {
-        $pednig_status = Statu::where('name_en','Pending')->first()->id;
+        $pednig_status = Status::where('name_en','Pending')->first()->id;
         $excuse = new Excuse ;
         $excuse->date = $request->date;
         $excuse->hours = $request->hours;

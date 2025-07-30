@@ -4,37 +4,51 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
-    /**
-     * Run the migrations.
-     */
+return new class extends Migration {
+
     public function up(): void
     {
         Schema::create('excuses', function (Blueprint $table) {
+
             $table->id();
-            $table->date('date')->nullable();
-            $table->double('hours',2)->nullable();
-            $table->foreign('user_id')->references('id')->on('users')->nullable();
-            $table->unsignedBigInteger('user_id')->nullable();
-            $table->foreign('type_id')->references('id')->on('types')->nullable();
-            $table->unsignedBigInteger('type_id')->nullable();
-            $table->foreign('reason_id')->references('id')->on('reasons')->nullable();
-            $table->unsignedBigInteger('reason_id')->nullable();
-            $table->foreign('actor_id')->references('id')->on('users')->nullable();
-            $table->unsignedBigInteger('actor_id')->nullable();
-            $table->text('note')->nullable();
-            $table->boolean( 'leader_approve')->default(false);
-            $table->foreign('statu_id')->references('id')->on('status')->nullable();
-            $table->unsignedBigInteger('statu_id')->nullable();
-            $table->boolean( 'mission')->default(false);
+
+            // تاريخ ووقت العذر
+            $table->dateTime('excuse_datetime')->nullable();
+
+            // مدة العذر بالساعات
+            $table->decimal('excuse_duration_hours', 4, 2)->nullable();
+
+            // الموظف صاحب العذر
+            $table->foreignId('employee_id')->constrained('users')->cascadeOnUpdate()->cascadeOnDelete();
+
+            // نوع العذر (طبي، تأخير، ... إلخ)
+            $table->foreignId('excuse_type_id')->constrained('types')->cascadeOnUpdate()->cascadeOnDelete();
+
+            // السبب نص حر
+            $table->string('reason')->nullable();
+
+            // موعد التواجد المتوقع في العمل
+            $table->dateTime('expected_attendance_time')->nullable();
+
+            // الشخص الذي قدّم العذر في النظام (HR أو مدير)
+            $table->foreignId('submitted_by_id')->constrained('users')->cascadeOnUpdate()->cascadeOnDelete();
+
+            // ملاحظات توضيحية إن وجدت
+            $table->text('notes')->nullable();
+
+            // حالة اعتماد القائد
+            $table->boolean('leader_approval_status')->default(false);
+
+            // حالة العذر (مقبول، مرفوض، قيد الانتظار)
+            $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
+
+            // هل العذر بسبب مهمة رسمية؟
+            $table->boolean('is_due_to_official_mission')->default(false);
+
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('excuses');

@@ -13,22 +13,35 @@ return new class extends Migration
     {
         Schema::create('deductions', function (Blueprint $table) {
             $table->id();
-            $table->date('date')->nullable();
-            $table->double('days',2)->nullable();
-            $table->foreign('user_id')->references('id')->on('users')->nullable();
-            $table->unsignedBigInteger('user_id')->nullable();
-            $table->foreign('type_id')->references('id')->on('types')->nullable();
-            $table->unsignedBigInteger('type_id')->nullable();
-            $table->foreign('reason_id')->references('id')->on('reasons')->nullable();
-            $table->unsignedBigInteger('reason_id')->nullable();
-            $table->foreign('actor_id')->references('id')->on('users')->nullable();
-            $table->unsignedBigInteger('actor_id')->nullable();
-            $table->text('note')->nullable();
-            $table->boolean( 'automatic')->default(false);
-            $table->boolean( 'status')->default(false);
+
+            // عدد أيام الخصم
+            $table->decimal('deduction_days', 4, 2)->nullable();
+
+            // الموظف المتأثر بالخصم
+            $table->foreignId('employee_id')->constrained('users')->cascadeOnUpdate()->cascadeOnDelete();
+
+            // نوع الخصم
+            $table->foreignId('deduction_type_id')->constrained('types')->cascadeOnUpdate()->cascadeOnDelete();
+
+            // سبب الخصم (نص حر)
+            $table->string('deduction_reason')->nullable();
+
+            // من قام بالخصم (HR أو النظام)
+            $table->foreignId('submitted_by_id')->constrained('users')->cascadeOnUpdate()->cascadeOnDelete();
+
+            // ملاحظات إضافية
+            $table->text('notes')->nullable();
+
+            // هل تم الخصم تلقائيًا؟
+            $table->boolean('is_automatic')->default(false);
+
+            // هل تم اعتماد الخصم؟
+            $table->boolean('is_approved')->default(false);
+
             $table->timestamps();
         });
     }
+
 
     /**
      * Reverse the migrations.

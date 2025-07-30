@@ -2,67 +2,61 @@
 
 namespace App\Services;
 
-use App\Models\Statu;
+use Carbon\Carbon;
 use App\Models\Vacation;
 use App\Helpers\ApiResponseHelper;
 use App\Http\Resources\VacationResource;
+use Illuminate\Support\Facades\Auth;
 
-class VacationService{
+class VacationService
+{
 
     use ApiResponseHelper;
-    public function MakeVacation($request)
+
+    public function index()
     {
-        // dd($request->day);
-        $pednig_status = Statu::where('name_en','Pending')->first()->id;
-        $vacation = new Vacation ;
-        $vacation->date = $request->date;
-        $vacation->day = $request->day;
-        $vacation->user_id = $request->user_id;
-        $vacation->alternative_id = $request->alternative_id;
-        $vacation->type_id = $request->type_id;
-        $vacation->reason_id = $request->reason_id;
-        $vacation->actor_id = $request->user()->id;
-        $vacation->note = $request->note == null ? null : $request->note;
-        $vacation->leader_approve = $request->leader_approve  == null ? false : true;
-        $vacation->statu_id = $request->statu_id == null ? $pednig_status : $request->statu_id;
-        $vacation->save();
-        return new VacationResource($vacation);
+        $user = auth()->user();
+        $currentYear = Carbon::now()->year;
+
+        // جلب الإجازات الخاصة بالموظف خلال السنة الحالية
+        $vacations = Vacation::with(['type', 'replacementEmployee', 'submittedBy', 'approvedBy'])->where('employee_id', $user->id)->whereYear('start_date', $currentYear)
+            ->orderBy('start_date', 'desc')->get();
+
+        // حساب إجمالي عدد الأيام
+        $totalDays = $vacations->sum(function ($vacation) {
+            $start = Carbon::parse($vacation->start_date);
+            $end = Carbon::parse($vacation->end_date);
+            return $start->diffInDays($end) + 1;
+        });
+
+        return response()->json([
+            'year' => $currentYear,
+            'total_days_used' => $totalDays,
+            'vacations' => VacationResource::collection($vacations),
+        ]);
     }
 
-    public function getYourVacations($request)
+    public function store($data)
     {
-        $user_id = auth()->user()->id;
+        $vacation = Vacation::create([
+            'start_date' => $data['start_date'], 'end_date' => $data['end_date'],
+            'notes' => $data['notes'], 'reason' => $data['reason'],
+            'type_id' => $data['type_id'],
+            'replacement_employee_id' => $data['replacement_employee_id'],
+            'submitted_by_id' => Auth::id(), 'employee_id' => Auth::id(),
+        ]);
 
-        // Get year and month from the request
-        $year = $request->year;
-        $month = $request->month;
-
-        // Query the vacations with optional year and month filtering
-        $vacations = Vacation::with(['user', 'type', 'reason', 'statu', 'actor' , 'alternative'])
-            ->where('user_id', $user_id)
-            ->when($year, function ($query, $year) {
-                $query->whereYear('date', $year);
-            })
-            ->when($month, function ($query, $month) {
-                $query->whereMonth('date', $month);
-            })
-            ->get();
-        return VacationResource::collection($vacations);
+        return response()->json([
+            'message' => 'Vacation request created successfully.',
+            'data' => new VacationResource($vacation)
+        ], 201);
     }
 
-    public function cancelVacation($id){
+    public function destroy($id)
+    {
         $vacation = Vacation::find($id);
         $vacation->delete();
     }
-    public function getAllVacation($request){
-        $year = $request->year;
-        $month = $request->month;
-        $day = $request->day;
-    }
-    public function VacationRequets(){
-        $statu_id = Statu::where('name_en','Pending')->first()->id ;
-        $vacations = Vacation::where('statu_id',$statu_id)->get();
-        return VacationResource::collection($vacations);
-    }
+
 
 }

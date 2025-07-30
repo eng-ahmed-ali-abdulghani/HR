@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 use App\Traits\Imageable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -14,11 +13,6 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, Imageable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'name',
         'username',
@@ -36,38 +30,35 @@ class User extends Authenticatable
         'end_date',
         'department_id',
         'company_id',
-        'shift_id',
         'user_type',
         'fcm_token',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
-        'department',
-        'company',
-        'shift',
     ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
     protected $casts = [
-        'email_verified_at' => 'datetime',
-        'password' => 'hashed',
+        'birth_date' => 'date',
+        'start_date' => 'date',
+        'end_date' => 'date',
+        'vacations' => 'decimal:2',
+        'sallary' => 'decimal:2',
     ];
+
 
     public function department()
     {
-        return $this->belongsTo(Department::class,'department_id');
+        return $this->belongsTo(Department::class);
     }
+
+    public function company()
+    {
+        return $this->belongsTo(Company::class);
+    }
+
+
     public function excuses()
     {
         return $this->hasMany(Excuse::class, 'user_id');
@@ -91,13 +82,5 @@ class User extends Authenticatable
         return $this->hasMany(Vacation::class, 'alternative_id');
     }
 
-    public function company()
-    {
-        return $this->belongsTo(Company::class, 'company_id');
-    }
-    public function shift()
-    {
-        return $this->belongsTo(Shift::class, 'shift_id');
-    }
 
 }

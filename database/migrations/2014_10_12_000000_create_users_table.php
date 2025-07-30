@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -13,31 +12,41 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
+
+            // بيانات المستخدم الأساسية
             $table->string('name');
-            $table->string('username')->nullable();
-            $table->string('email')->nullable();
+            $table->string('username')->nullable()->unique();
+            $table->string('email')->nullable()->unique();
             $table->string('title')->nullable();
-            $table->string('code')->unique();
+            $table->string('code')->unique(); // كود الموظف
             $table->string('password');
             $table->string('phone')->nullable();
-            $table->string('gender')->nullable();
-            $table->integer('age')->nullable();
+            $table->enum('gender', ['male', 'female', 'other'])->nullable();
+            $table->unsignedTinyInteger('age')->nullable();
             $table->date('birth_date')->nullable();
-            $table->double('vacations',2)->default(21);
-            $table->double('sallary',2)->default(0);
-            $table->timestamp('start_date')->useCurrent();
-            $table->timestamp('end_date')->useCurrent()->useCurrentOnUpdate();
-            $table->foreign('department_id')->references('id')->on('departments')->nullable();
-            $table->unsignedBigInteger('department_id')->nullable();
-            $table->foreign('company_id')->references('id')->on('companies')->nullable();
-            $table->unsignedBigInteger('company_id')->nullable();
-            $table->foreign('shift_id')->references('id')->on('shifts')->nullable();
-            $table->unsignedBigInteger('shift_id')->nullable();
-            $table->string('user_type')->default("user");
+
+            // بيانات العمل
+            $table->decimal('vacations', 5, 2)->default(21); // عدد أيام الإجازة
+            $table->decimal('sallary', 10, 2)->default(0);   // الراتب
+            $table->date('start_date')->nullable();
+            $table->date('end_date')->nullable();
+
+            // العلاقات
+            $table->foreignId('department_id')->nullable()->constrained()->cascadeOnUpdate()->cascadeOnDelete();
+
+            $table->foreignId('company_id')->nullable()->constrained()->cascadeOnUpdate()->cascadeOnDelete();
+
+            // النوع (موظف، مدير، مسؤول...)
+            $table->string('user_type')->default('employee');
+
+            // للتنبيهات (FCM)
             $table->string('fcm_token')->nullable();
+
+            // Laravel built-ins
             $table->rememberToken();
             $table->timestamps();
         });
+
     }
 
     /**

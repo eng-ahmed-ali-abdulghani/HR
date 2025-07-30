@@ -16,6 +16,6 @@ class VacationController extends Controller
     public function newRequests ()
     {
         $vacations = $this->vacationService->VacationRequets();
-        return view('dachboard.Pages.Vacations.newRequests', compact('vacations'));
+        return view('dashboard.Pages.Vacations.newRequests', compact('vacations'));
     }
 }

@@ -15,9 +15,8 @@ use App\Http\Requests\Api\UpdateUserRequest;
 use Illuminate\Database\UniqueConstraintViolationException;
 
 
-
-
-class UserService{
+class UserService
+{
     use UploadImage;
     use ApiResponseHelper;
     use MergeObjects;
@@ -29,13 +28,12 @@ class UserService{
         // If the user has an image, extract the URL and add it to the user object
         if ($user->image) {
             $formattedUser['photo'] = $user->image->photo;
-        }
-        else{
+        } else {
             $formattedUser['photo'] = null;
         }
         // Remove the 'image' key from the user object
         unset($formattedUser['image']);
-        return $formattedUser ;
+        return $formattedUser;
     }
 
     public function update(UpdateUserRequest $request)
@@ -70,28 +68,27 @@ class UserService{
     }
 
 
-
-    public function delete (int $user_id)
+    public function delete(int $user_id)
     {
         // Get the associated image record
         $image = Image::where('imageable_type', User::class)
-        ->where('imageable_id', $user_id)
-        ->first();
+            ->where('imageable_id', $user_id)
+            ->first();
 
         // Check if the image exists and delete it
-            if ($image) {
-                // Delete the image file from storage if it exists
-                if (File::exists(str_replace(config('app.photo_url'), '', $image->photo))) {
-                    File::delete(str_replace(config('app.photo_url'), '', $image->photo));
-                }
-
-                // Delete the image record from the database
-                $image->delete();
+        if ($image) {
+            // Delete the image file from storage if it exists
+            if (File::exists(str_replace(config('app.photo_url'), '', $image->photo))) {
+                File::delete(str_replace(config('app.photo_url'), '', $image->photo));
             }
 
-            User::find($user_id)->delete();
-            return $this->setCode(200)->setMessage('Success')->send();
+            // Delete the image record from the database
+            $image->delete();
         }
+
+        User::find($user_id)->delete();
+        return $this->setCode(200)->setMessage('Success')->send();
     }
+}
 
 

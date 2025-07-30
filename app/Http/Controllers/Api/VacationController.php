@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Models\Statu;
 use App\Models\Vacation;
-use Illuminate\Http\Request;
 use App\Services\VacationService;
 use App\Helpers\ApiResponseHelper;
 use App\Http\Controllers\Controller;
@@ -13,6 +11,7 @@ use App\Http\Requests\Api\Vacations\StoreVacationRequest;
 class VacationController extends Controller
 {
     use ApiResponseHelper;
+
     protected $vacationService;
 
     public function __construct(VacationService $vacationService)
@@ -20,35 +19,44 @@ class VacationController extends Controller
         $this->vacationService = $vacationService;
     }
 
-    public function index(Request $request)
+    public function index()
     {
-        $vacations = $this->vacationService->getYourVacations($request);
+        $vacations = $this->vacationService->index();
         return $this->setCode(200)->setMessage('Success')->setData($vacations)->send();
     }
 
     public function store(StoreVacationRequest $request)
     {
-        // dd($request->all());
-        $vacation = Vacation::where('date', $request->date)->where('user_id',$request->user()->id)->first();
-        if($vacation){
-            return $this->setCode(404)->setMessage(__('messages.vacation_booked'))->send();
+        // التحقق من وجود إجازة بنفس التاريخ لنفس المستخدم
+        $vacationExists = Vacation::whereDate('start_date', $request->start_date)->where('employee_id', $request->user()->id)->exists();
+
+        if ($vacationExists) {
+            return $this->setCode(409)->setMessage(__('messages.vacation_booked'))->send();
         }
-        $vacation = $this->vacationService->MakeVacation($request);
-        return $this->setCode(200)->setMessage('Success')->setData($vacation)->send();
+        // حفظ الإجازة باستخدام الخدمة
+        $vacation = $this->vacationService->store($request->validated());
+
+        return $this->setCode(201)->setMessage(__('messages.success'))->setData($vacation)->send();
     }
-    public function delete($id)
+
+
+    public function destroy($id)
     {
-        // dd($request->all());
         $user_id = auth()->user()->id;
+
         $vacation = Vacation::where('user_id', $user_id)->where('id', $id)->first();
+
         if (!$vacation) {
             return $this->setCode(404)->setMessage(__('messages.not_found'))->send();
         }
-        if($vacation->statu_id === Statu::where('name_en','Approved')->first()->id)
-        {
-            return $this->setCode(404)->setMessage(__('messages.forbiden'))->send();
+
+        if ($vacation->status === 'approved') {
+            return $this->setCode(403)->setMessage(__('messages.forbiden'))->send();
         }
-        $this->vacationService->cancelVacation($id);
+
+        $this->vacationService->destroy($id);
+
         return $this->setCode(200)->setMessage(__('messages.cancel_vacation'))->send();
     }
+
 }

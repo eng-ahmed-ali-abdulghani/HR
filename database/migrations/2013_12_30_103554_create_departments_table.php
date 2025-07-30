@@ -12,10 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('departments', function (Blueprint $table) {
-            // show In Dashboard
             $table->id();
-            $table->string('name');  // اسم القسم
-            $table->integer('leader_id')->nullable();  // رائس القسم دة
+            $table->foreignId('leader_id')->nullable()/*->references('id')->on('users')->cascadeOnUpdate()->cascadeOnDelete()*/;
             $table->timestamps();
         });
     }
