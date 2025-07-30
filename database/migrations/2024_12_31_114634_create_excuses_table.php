@@ -12,23 +12,20 @@ return new class extends Migration {
 
             $table->id();
 
-            // تاريخ ووقت العذر
-            $table->dateTime('excuse_datetime')->nullable();
+            // تاريخ بدء العذر
+            $table->dateTime('start_date');
 
-            // مدة العذر بالساعات
-            $table->decimal('excuse_duration_hours', 4, 2)->nullable();
+            // تاريخ نهاية العذر
+            $table->dateTime('end_date');
 
             // الموظف صاحب العذر
             $table->foreignId('employee_id')->constrained('users')->cascadeOnUpdate()->cascadeOnDelete();
 
             // نوع العذر (طبي، تأخير، ... إلخ)
-            $table->foreignId('excuse_type_id')->constrained('types')->cascadeOnUpdate()->cascadeOnDelete();
+            $table->foreignId('type_id')->constrained('types')->cascadeOnUpdate()->cascadeOnDelete();
 
             // السبب نص حر
             $table->string('reason')->nullable();
-
-            // موعد التواجد المتوقع في العمل
-            $table->dateTime('expected_attendance_time')->nullable();
 
             // الشخص الذي قدّم العذر في النظام (HR أو مدير)
             $table->foreignId('submitted_by_id')->constrained('users')->cascadeOnUpdate()->cascadeOnDelete();

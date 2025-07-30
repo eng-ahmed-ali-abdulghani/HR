@@ -8,9 +8,7 @@ use Illuminate\Foundation\Http\FormRequest;
 class StoreExcuseRequest extends FormRequest
 {
     use ValidationErrors;
-    /**
-     * Determine if the user is authorized to make this request.
-     */
+
     public function authorize(): bool
     {
         return true;
@@ -18,11 +16,12 @@ class StoreExcuseRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'date' => 'required|date|date_format:Y-m-d',
-            'note' =>'nullable|string|max:255',
-            'type_id' =>'required|exists:types,id',
-            'reason_id' =>'required|exists:reasons,id',
-            'user_id' =>'required|exists:users,id',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date',
+            'type_id' => 'required|exists:types,id',
+            'reason' => 'nullable|string|max:255',
+            'notes' => 'nullable|string',
+            'leader_approval_status' => 'boolean',
         ];
     }
 }

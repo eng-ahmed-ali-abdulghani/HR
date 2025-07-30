@@ -1,10 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\AuthController;
-use App\Http\Controllers\Api\ExcuseController;
-use App\Http\Controllers\Api\HomeController;
-use App\Http\Controllers\Api\VacationController;
+use App\Http\Controllers\Api\{VacationController,DeductionController,ExcuseController,HomeController,AuthController};
+
 
 Route::group(['middleware' => ["SetLang"]], function () {
 
@@ -18,7 +16,7 @@ Route::group(['middleware' => ["SetLang"]], function () {
         Route::post('logout', [AuthController::class, 'logout']);
 
         //Home
-        Route::get('/home', [HomeController::class, 'home']);
+        Route::get('home', [HomeController::class, 'home']);
 
         // Vacations
         Route::resource('vacation', VacationController::class);
@@ -27,7 +25,7 @@ Route::group(['middleware' => ["SetLang"]], function () {
         Route::resource('excuse', ExcuseController::class);
 
         // Deductions
-        Route::resource('deductions', ExcuseController::class);
+        Route::resource('deductions', DeductionController::class);
 
 
     });

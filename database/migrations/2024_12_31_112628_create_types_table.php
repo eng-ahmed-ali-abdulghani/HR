@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('types', function (Blueprint $table) {
             $table->id();
             $table->string('name')->nullable();
+            $table->enum('type',['vacation','excuse'])->nullable();
             $table->timestamps();
         });
     }

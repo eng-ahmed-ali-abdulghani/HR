@@ -9,7 +9,7 @@ use App\Helpers\ApiResponseHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\Excuses\StoreExcuseRequest;
 
-class ExcuseController extends Controller
+class DeductionController extends Controller
 {
     use ApiResponseHelper;
 
