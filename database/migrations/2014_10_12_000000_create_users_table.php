@@ -26,7 +26,7 @@ return new class extends Migration {
             $table->date('birth_date')->nullable();
 
             // بيانات العمل
-            $table->decimal('vacations', 5, 2)->default(21); // عدد أيام الإجازة
+            $table->decimal('allowed_vacation_days', 5, 2)->default(21); // عدد أيام الإجازة
             $table->decimal('sallary', 10, 2)->default(0);   // الراتب
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();

@@ -13,48 +13,7 @@ class DeductionController extends Controller
 {
     use ApiResponseHelper;
 
-    protected $excuseService;
 
-    public function __construct(ExcuseService $excuseService)
-    {
-        $this->excuseService = $excuseService;
-    }
 
-    public function index()
-    {
-        $excuses = $this->excuseService->index();
-        return $this->setCode(200)->setMessage('Success')->setData($excuses)->send();
-    }
 
-    public function store(StoreExcuseRequest $request)
-    {
-        $excuseExists = Excuse::whereDate('start_date', $request->start_date)->where('employee_id', $request->user()->id)->exists();
-
-        if ($excuseExists) {
-            return $this->setCode(409)->setMessage(__('messages.vacation_booked'))->send();
-        }
-        // حفظ الإجازة باستخدام الخدمة
-        $vacation = $this->excuseService->store($request->validated());
-
-        return $this->setCode(201)->setMessage(__('messages.success'))->setData($vacation)->send();
-    }
-
-    public function destroy($id)
-    {
-        $user_id = auth()->user()->id;
-
-        $excuse = Excuse::where('user_id', $user_id)->where('id', $id)->first();
-
-        if (!$excuse) {
-            return $this->setCode(404)->setMessage(__('messages.not_found'))->send();
-        }
-
-        if ($excuse->status === 'approved') {
-            return $this->setCode(403)->setMessage(__('messages.forbiden'))->send();
-        }
-
-        $this->excuseService->destroy($id);
-
-        return $this->setCode(200)->setMessage('تم الغاء طلب الاذن ')->send();
-    }
 }

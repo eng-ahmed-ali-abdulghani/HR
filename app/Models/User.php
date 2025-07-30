@@ -24,7 +24,7 @@ class User extends Authenticatable
         'gender',
         'age',
         'birth_date',
-        'vacations',
+        'allowed_vacation_days',
         'sallary',
         'start_date',
         'end_date',
@@ -43,7 +43,7 @@ class User extends Authenticatable
         'birth_date' => 'date',
         'start_date' => 'date',
         'end_date' => 'date',
-        'vacations' => 'decimal:2',
+        'allowed_vacation_days' => 'decimal:2',
         'sallary' => 'decimal:2',
     ];
 

@@ -4,37 +4,39 @@ namespace App\Services;
 
 use Carbon\Carbon;
 use App\Models\Vacation;
-use App\Helpers\ApiResponseHelper;
 use App\Http\Resources\VacationResource;
 use Illuminate\Support\Facades\Auth;
 
 class VacationService
 {
 
-    use ApiResponseHelper;
-
     public function index()
     {
-        $user = auth()->user();
-        $currentYear = Carbon::now()->year;
-
-        // جلب الإجازات الخاصة بالموظف خلال السنة الحالية
-        $vacations = Vacation::with(['type', 'replacementEmployee', 'submittedBy', 'approvedBy'])->where('employee_id', $user->id)->whereYear('start_date', $currentYear)
-            ->orderBy('start_date', 'desc')->get();
-
-        // حساب إجمالي عدد الأيام
+        $employee = auth()->user();
+        $start_date = $employee->start_date;
+        // رصيد الإجازات المسموح بيه للموظف
+        $allowed_vacation_days = $employee->allowed_vacation_days;
+        // جلب الإجازات من وقت بدء العمل حتى الآن
+        $vacations = Vacation::with(['type', 'replacementEmployee', 'submittedBy', 'approvedBy'])->where('employee_id', $employee->id)
+            ->whereDate('start_date', '>=', $start_date)->orderBy('start_date', 'desc')->get();
+        // حساب إجمالي الأيام المستخدمة
         $totalDays = $vacations->sum(function ($vacation) {
             $start = Carbon::parse($vacation->start_date);
             $end = Carbon::parse($vacation->end_date);
             return $start->diffInDays($end) + 1;
         });
+        // حساب الرصيد المتبقي
+        $remainingDays = max(0, $allowed_vacation_days - $totalDays);
 
-        return response()->json([
-            'year' => $currentYear,
+        return [
+            'from_date' => $start_date,
+            'allowed_days' => $allowed_vacation_days,
             'total_days_used' => $totalDays,
+            'remaining_days' => $remainingDays,
             'vacations' => VacationResource::collection($vacations),
-        ]);
+        ];
     }
+
 
     public function store($data)
     {
