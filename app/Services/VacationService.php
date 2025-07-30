@@ -48,10 +48,7 @@ class VacationService
             'submitted_by_id' => Auth::id(), 'employee_id' => Auth::id(),
         ]);
 
-        return response()->json([
-            'message' => 'Vacation request created successfully.',
-            'data' => new VacationResource($vacation)
-        ], 201);
+        return new VacationResource($vacation);
     }
 
     public function destroy($id)

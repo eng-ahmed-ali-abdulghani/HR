@@ -55,10 +55,7 @@ class ExcuseService
             'submitted_by_id' => Auth::id(), 'employee_id' => Auth::id(),
         ]);
 
-        return response()->json([
-            'message' => 'Excuse request created successfully.',
-            'data' => new ExcuseResource($excuse)
-        ], 201);
+        return new ExcuseResource($excuse);
     }
 
     public function destroy($id)
