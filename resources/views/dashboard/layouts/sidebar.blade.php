@@ -32,9 +32,9 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a href="" class="nav-link ">
+                <a href="{{route('user.index')}}" class="nav-link ">
                     <i class="fas fa-car"></i>
-                    <span>ادارة الموظفين </span>
+                    <span>  حضور الموظفين  </span>
                 </a>
             </li>
             <li class="nav-item">

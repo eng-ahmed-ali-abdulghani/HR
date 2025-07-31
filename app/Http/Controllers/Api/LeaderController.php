@@ -52,7 +52,7 @@ class LeaderController extends Controller
             'total_pending_excuses' => $totalExcuses,
             'total_pending_requests' => $totalRequests,
         ];
-        return $this->setCode(201)->setMessage(__('messages.success'))->setData($data)->send();
+        return $this->setCode(201)->setMessage(__('Success'))->setData($data)->send();
 
     }
 
@@ -83,7 +83,6 @@ class LeaderController extends Controller
         // تحديث الحقول المشتركة
         $model->is_leader_approved = true;
         $model->approved_by_id = Auth::id();
-
         $model->save();
 
         return $this->setCode(201)->setMessage(__('messages.success'))->send();

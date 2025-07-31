@@ -38,26 +38,44 @@ class UserSeeder extends Seeder
             'user_type' => 'admin',
         ]);
 
-        $faker = Faker::create('ar_EG'); // أو 'en_US' حسب اللغة
+        $names = [
+            'Marwan Khaled',
+            'Moustafa Marwan',
+            'Rawan Hosny',
+            'Esraa Abdelkaer',
+            'Abeer Rashad',
+            'Mohamed Gamal',
+            'Anas Emad',
+            'Mai Al-Rabi',
+            'Karem Elsayed',
+            'Mohamd Basuny',
+            'Saly Ahmed',
+            'Amer Hashima',
+            'Adel Eissa',
+            'Mohamed Abdelgany',
+            'Ahmed Ali',
+            'Mostafa Ali',
+            'Hussien Salem',
+        ];
 
-        for ($i = 1; $i <= 25; $i++) {
+        foreach ($names as $i => $name) {
             User::create([
-                'name' => $faker->name,
-                'username' => 'user' . $i,
-                'email' => 'user' . $i . '@example.com',
-                'title' => $faker->jobTitle,
-                'code' => 'EMP' . str_pad($i, 3, '0', STR_PAD_LEFT),
-                'password' => Hash::make('password'), // كلهم كلمة سرهم "password"
-                'phone' => '05' . rand(000000000, 999999999),
-                'gender' => $faker->randomElement(['male', 'female']),
+                'name' => $name,
+                'username' => 'user' . ($i + 1),
+                'email' => 'user' . ($i + 1) . '@example.com',
+                'title' => 'موظف',
+                'code' => 'EMP' . str_pad($i + 1, 3, '0', STR_PAD_LEFT),
+                'password' => Hash::make('password'),
+                'phone' => '05' . rand(100000000, 999999999),
+                'gender' => rand(0, 1) ? 'male' : 'female',
                 'age' => rand(22, 45),
-                'birth_date' => $faker->date('Y-m-d', '2002-01-01'),
+                'birth_date' => now()->subYears(rand(22, 45))->format('Y-m-d'),
                 'allowed_vacation_days' => 21,
                 'sallary' => rand(8000, 20000),
-                'start_date' => $faker->date('Y-m-d', '2024-01-01'),
+                'start_date' => now()->subMonths(rand(1, 12))->format('Y-m-d'),
                 'end_date' => null,
-                'department_id' => 1, // تأكد أن القسم موجود
-                'user_type' => $faker->randomElement(['employee', 'hr']),
+                'department_id' => 1,
+                'user_type' => 'employee',
                 'fcm_token' => null,
             ]);
         }

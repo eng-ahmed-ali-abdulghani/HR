@@ -62,7 +62,11 @@ class User extends Authenticatable
 
     public function excuses()
     {
-        return $this->hasMany(Excuse::class, 'user_id');
+        return $this->hasMany(Excuse::class, 'employee_id');
+    }
+    public function vacations()
+    {
+        return $this->hasMany(Vacation::class, 'employee_id');
     }
 
     public function actedExcuses()
@@ -70,10 +74,7 @@ class User extends Authenticatable
         return $this->hasMany(Excuse::class, 'actor_id');
     }
 
-    public function vacations()
-    {
-        return $this->hasMany(Vacation::class, 'user_id');
-    }
+
 
     public function actedVacations()
     {

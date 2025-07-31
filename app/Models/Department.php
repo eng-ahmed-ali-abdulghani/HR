@@ -12,7 +12,7 @@ class Department extends Model
 
     public $translatedAttributes = ['name'];
 
-    protected $fillable = ['leader_id','name','company_id'];
+    protected $fillable = ['leader_id', 'name', 'company_id'];
 
     public $timestamps = false;
 
@@ -25,6 +25,7 @@ class Department extends Model
     {
         return $this->hasMany(User::class);
     }
+
     public function company()
     {
         return $this->belongsTo(Company::class, 'company_id');

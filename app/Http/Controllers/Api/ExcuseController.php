@@ -31,7 +31,7 @@ class ExcuseController extends Controller
     public function store(StoreExcuseRequest $request)
     {
         $data = $request->validated();
-        $excuseExists = Excuse::where('employee_id', Auth::id())->first();
+        $excuseExists = Excuse::where('employee_id', Auth::id())->exists();
 
         if ($excuseExists) {
             return $this->setCode(409)->setMessage(__('messages.vacation_booked'))->send();
