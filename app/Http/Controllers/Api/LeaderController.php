@@ -4,16 +4,13 @@ namespace App\Http\Controllers\Api;
 
 use App\Helpers\ApiResponseHelper;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\ExcuseResource;
 use App\Http\Resources\UserResource;
-use App\Http\Resources\VacationResource;
 use App\Models\Department;
 use App\Models\Excuse;
 use App\Models\User;
 use App\Models\Vacation;
 use App\Services\ExcuseService;
 use App\Services\VacationService;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 class LeaderController extends Controller

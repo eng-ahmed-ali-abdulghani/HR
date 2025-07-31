@@ -57,7 +57,6 @@ class UserSeeder extends Seeder
                 'start_date' => $faker->date('Y-m-d', '2024-01-01'),
                 'end_date' => null,
                 'department_id' => 1, // تأكد أن القسم موجود
-                'company_id' => 1,    // تأكد أن الشركة موجودة
                 'user_type' => $faker->randomElement(['employee', 'hr']),
                 'fcm_token' => null,
             ]);

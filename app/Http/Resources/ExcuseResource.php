@@ -14,34 +14,36 @@ class ExcuseResource extends JsonResource
         return [
             'id' => $this->id,
 
-            'start_date' => $this->start_date->format('Y-m-d H:i'),
-            'end_date' => $this->end_date->format('Y-m-d H:i'),
+            'start_date' => $this->start_date,
+            'end_date' => $this->end_date,
 
-            'type' => [
-                'id' => $this->type->id ?? null,
-                'name' => $this->type->name ?? null,
-            ],
+            'days_count' => \Carbon\Carbon::parse($this->start_date)->diffInDays(\Carbon\Carbon::parse($this->end_date)) + 1,
+
+            'employee_id' => $this->employee?->id,
+            'employee_name' => $this->employee?->name,
+
+            'type_id' => $this->type?->id,
+            'type_name' => $this->type?->name,
 
             'reason' => $this->reason,
+
+            'replacement_employee_id' => $this->replacementEmployee?->id,
+            'replacement_employee_name' => $this->replacementEmployee?->name,
+
+            'submitted_by_id' => $this->submittedBy?->id,
+            'submitted_by_name' => $this->submittedBy?->name,
+
+            'approved_by_id' => $this->approvedBy?->id,
+            'approved_by_name' => $this->approvedBy?->name,
+
             'notes' => $this->notes,
 
-            'leader_approval_status' => $this->leader_approval_status,
+            'is_leader_approved' => $this->is_leader_approved,
+
             'status' => $this->status,
-            'is_due_to_official_mission' => $this->is_due_to_official_mission,
 
-            'employee' => [
-                'id' => $this->employee->id ?? null,
-                'name' => $this->employee->name ?? null,
-                'email' => $this->employee->email ?? null,
-            ],
-
-            'submitted_by' => [
-                'id' => $this->submittedBy->id ?? null,
-                'name' => $this->submittedBy->name ?? null,
-                'email' => $this->submittedBy->email ?? null,
-            ],
-
-            'created_at' => $this->created_at->format('Y-m-d H:i'),
+            'created_at' => $this->created_at?->toDateTimeString(),
         ];
+
     }
 }

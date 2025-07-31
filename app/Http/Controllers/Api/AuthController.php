@@ -20,21 +20,19 @@ class AuthController extends Controller
     public function Login(LoginRequest $request)
     {
         $data = $request->validated();
-        if (!Auth::attempt(['phone' => $$data['phone'], 'password' => $data['phone']])) {
+        if (!Auth::attempt(['phone' => $data['phone'], 'password' => $data['password']])) {
             return response()->json(['status' => false, 'message' => (__('auth.failed')), 'code' => 401], 401);
         }
-        $user = User::where('phone', $request->phone)->first();
-        return $this->setCode(200)->setMessage('User Logeed in Successfully')->setData([
-            'user' => new UserResource($user),
-            'token' => $user->createToken('auth_token')->plainTextToken
-        ])->send();
+        $user = User::where('phone', $data['phone'])->first();
+        $user['token']= $user->createToken('auth_token')->plainTextToken;
+        return $this->setCode(200)->setMessage('User Logeed in Successfully')->setData(new UserResource($user))->send();
     }
 
     public function update(UpdateUserRequest $request, UserService $userService)
     {
         try {
             $user = $userService->update($request);
-            return $this->setCode(200)->setMessage(__('auth.update success'))->setData($user)->send();
+            return $this->setCode(200)->setMessage(__('auth.update success'))->setData(new UserResource($user))->send();
         } catch (ModelNotFoundException $exception) {
             return $this->setCode(404)->setMessage(__('auth.user not found'))->send();
         }

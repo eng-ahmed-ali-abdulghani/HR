@@ -13,26 +13,31 @@ class VacationService
     public function getVactionForEmployee($employee)
     {
         $start_date = $employee->start_date;
-        // رصيد الإجازات المسموح بيه للموظف
         $allowed_vacation_days = $employee->allowed_vacation_days;
-        // جلب الإجازات من وقت بدء العمل حتى الآن
-        $vacations = Vacation::with(['type', 'replacementEmployee', 'submittedBy', 'approvedBy'])->where('employee_id', $employee->id)
-            ->whereDate('start_date', '>=', $start_date)->orderBy('start_date', 'desc')->get();
-        // حساب إجمالي الأيام المستخدمة
-        $totalDays = $vacations->sum(function ($vacation) {
-            $start = Carbon::parse($vacation->start_date);
-            $end = Carbon::parse($vacation->end_date);
+
+        $vacations = Vacation::with(['type', 'replacementEmployee', 'submittedBy', 'approvedBy'])
+            ->where('employee_id', $employee->id)
+            ->whereDate('start_date', '>=', $start_date)
+            ->orderBy('start_date', 'desc')
+            ->get();
+
+        // احتساب فقط الإجازات المعتمدة (موافقة)
+        $approvedVacations = $vacations->where('status', 'approved');
+
+        $totalDays = $approvedVacations->sum(function ($vacation) {
+            $start = \Carbon\Carbon::parse($vacation->start_date);
+            $end = \Carbon\Carbon::parse($vacation->end_date);
             return $start->diffInDays($end) + 1;
         });
-        // حساب الرصيد المتبقي
+
         $remainingDays = max(0, $allowed_vacation_days - $totalDays);
 
         return [
-            'from_date' => $start_date,
+            'from_date' => $start_date->toDateString(),
             'allowed_days' => $allowed_vacation_days,
-            'total_days_used' => $totalDays,
+            'total_days_used' => $totalDays, // فقط الإجازات المعتمدة
             'remaining_days' => $remainingDays,
-            'vacations' => VacationResource::collection($vacations),
+            'vacations' => VacationResource::collection($vacations), // كل الإجازات للعرض
         ];
     }
 

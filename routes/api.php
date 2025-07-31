@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\{VacationController, DeductionController, ExcuseController,HomeController, AuthController, LeaderController};
+use App\Http\Controllers\Api\{VacationController, DeductionController, ExcuseController, HomeController, AuthController, LeaderController,TypeController};
 
 
 Route::group(['middleware' => ["SetLang"]], function () {
@@ -13,7 +13,7 @@ Route::group(['middleware' => ["SetLang"]], function () {
 
         // Auth
         Route::post('user/update', [AuthController::class, 'update']);
-        Route::post('logout', [AuthController::class, 'logout']);
+        Route::get('user/logout', [AuthController::class, 'logout']);
 
         //Home
         Route::get('home', [HomeController::class, 'home']);
@@ -28,11 +28,15 @@ Route::group(['middleware' => ["SetLang"]], function () {
         Route::resource('deductions', DeductionController::class);
 
         //leader
-        Route::get('leader/get-employees', [LeaderController::class, 'getLeaderEmployees']);
-        Route::get('leader/accept-request-vacation/{id}', [LeaderController::class, 'acceptRequestVacation']);
-        Route::get('leader/accept-request-excuse/{id}', [LeaderController::class, 'acceptRequestExcuse']);
-        Route::get('leader/get-request-vacation/user/{id}', [LeaderController::class, 'getRequestVacationForUser']);
-        Route::get('leader/get-request-excuse/user/{id}', [LeaderController::class, 'getRequestExcuseForUser']);
+        Route::controller(LeaderController::class)->prefix('leader')->group(function () {
+            Route::get('get-employees', 'getLeaderEmployees');
+            Route::get('accept-request-vacation/{id}', 'acceptRequestVacation');
+            Route::get('accept-request-excuse/{id}', 'acceptRequestExcuse');
+            Route::get('get-request-vacation/user/{id}', 'getRequestVacationForUser');
+            Route::get('get-request-excuse/user/{id}', 'getRequestExcuseForUser');
+        });
+
+        Route::get('get-type', [TypeController::class, 'GetType']);
 
 
     });

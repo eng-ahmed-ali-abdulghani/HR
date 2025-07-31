@@ -32,6 +32,7 @@ class User extends Authenticatable
         'company_id',
         'user_type',
         'fcm_token',
+        'fingerprint_employee_id',
     ];
 
     protected $hidden = [
@@ -68,6 +69,7 @@ class User extends Authenticatable
     {
         return $this->hasMany(Excuse::class, 'actor_id');
     }
+
     public function vacations()
     {
         return $this->hasMany(Vacation::class, 'user_id');
@@ -77,6 +79,7 @@ class User extends Authenticatable
     {
         return $this->hasMany(Vacation::class, 'actor_id');
     }
+
     public function alterVacations()
     {
         return $this->hasMany(Vacation::class, 'alternative_id');

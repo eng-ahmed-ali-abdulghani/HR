@@ -15,42 +15,30 @@ class VacationResource extends JsonResource
             'id' => $this->id,
 
             'start_date' => $this->start_date,
-
             'end_date' => $this->end_date,
 
             'days_count' => \Carbon\Carbon::parse($this->start_date)->diffInDays(\Carbon\Carbon::parse($this->end_date)) + 1,
 
-            'employee' => [
-                'id' => $this->employee?->id,
-                'name' => $this->employee?->name,
-            ],
+            'employee_id' => $this->employee?->id,
+            'employee_name' => $this->employee?->name,
 
-            'type' => [
-                'id' => $this->type?->id,
-                'name' => $this->type?->name,
-            ],
+            'type_id' => $this->type?->id,
+            'type_name' => $this->type?->name,
 
             'reason' => $this->reason,
 
-            'replacement_employee' => [
-                'id' => $this->replacementEmployee?->id,
-                'name' => $this->replacementEmployee?->name,
-            ],
+            'replacement_employee_id' => $this->replacementEmployee?->id,
+            'replacement_employee_name' => $this->replacementEmployee?->name,
 
-            'submitted_by' => [
-                'id' => $this->submittedBy?->id,
-                'name' => $this->submittedBy?->name,
-            ],
+            'submitted_by_id' => $this->submittedBy?->id,
+            'submitted_by_name' => $this->submittedBy?->name,
 
-            'approved_by' => [
-                'id' => $this->approvedBy?->id,
-                'name' => $this->approvedBy?->name,
-            ],
+            'approved_by_id' => $this->approvedBy?->id,
+            'approved_by_name' => $this->approvedBy?->name,
 
             'notes' => $this->notes,
 
             'is_leader_approved' => $this->is_leader_approved,
-
             'status' => $this->status,
 
             'created_at' => $this->created_at?->toDateTimeString(),
