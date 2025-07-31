@@ -35,9 +35,9 @@ class VacationController extends Controller
             return $this->setCode(409)->setMessage(__('messages.vacation_booked'))->send();
         }
         // حفظ الإجازة باستخدام الخدمة
-        $vacation = $this->vacationService->store($request->validated());
+        $data = $this->vacationService->store($request->validated());
 
-        return $this->setCode(201)->setMessage(__('messages.success'))->setData($vacation)->send();
+        return $this->setCode($data['code'])->setMessage($data['message'])->setData($data['data'])->send();
     }
 
 

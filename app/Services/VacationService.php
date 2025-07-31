@@ -44,16 +44,52 @@ class VacationService
 
     public function store($data)
     {
+        $employee = Auth::user();
+
+        // اجلب تاريخ بدء العمل وعدد الأيام المسموح بها
+        $start_date = $employee->start_date;
+        $allowed_days = $employee->allowed_vacation_days;
+
+        // احسب عدد الأيام المعتمدة سابقاً
+        $usedDays = Vacation::where('employee_id', $employee->id)->where('status', 'approved')
+            ->whereDate('start_date', '>=', $start_date)
+            ->get()
+            ->sum(function ($vacation) {
+                return \Carbon\Carbon::parse($vacation->start_date)
+                        ->diffInDays(\Carbon\Carbon::parse($vacation->end_date)) + 1;
+            });
+
+        // احسب عدد الأيام المطلوبة حالياً
+        $requestedDays = \Carbon\Carbon::parse($data['start_date'])
+                ->diffInDays(\Carbon\Carbon::parse($data['end_date'])) + 1;
+
+        // تحقق من التوفر
+        if ($usedDays + $requestedDays > $allowed_days) {
+            return [
+                'code' => 422,
+                'message' => 'لا يمكن تقديم الإجازة، لقد استنفدت كل أيام الإجازة المسموح بها.',
+                'data' => null,
+            ];
+        }
+
+        // إنشاء الإجازة
         $vacation = Vacation::create([
-            'start_date' => $data['start_date'], 'end_date' => $data['end_date'],
-            'notes' => $data['notes'], 'reason' => $data['reason'],
+            'start_date' => $data['start_date'],
+            'end_date' => $data['end_date'],
+            'notes' => $data['notes'],
+            'reason' => $data['reason'],
             'type_id' => $data['type_id'],
             'replacement_employee_id' => $data['replacement_employee_id'],
-            'submitted_by_id' => Auth::id(), 'employee_id' => Auth::id(),
+            'submitted_by_id' => $employee->id,
+            'employee_id' => $employee->id,
         ]);
-
-        return new VacationResource($vacation);
+        return [
+            'code' => 201,
+            'message' => 'تم تقديم طلب الاجازة بنجاح',
+            'data' => new VacationResource($vacation),
+        ];
     }
+
 
     public function destroy($id)
     {
