@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('departments', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('company_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->foreignId('leader_id')->nullable()/*->references('id')->on('users')->cascadeOnUpdate()->cascadeOnDelete()*/;
             $table->timestamps();
         });

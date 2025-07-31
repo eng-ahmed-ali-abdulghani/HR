@@ -34,7 +34,6 @@ return new class extends Migration {
             // العلاقات
             $table->foreignId('department_id')->nullable()->constrained()->cascadeOnUpdate()->cascadeOnDelete();
 
-            $table->foreignId('company_id')->nullable()->constrained()->cascadeOnUpdate()->cascadeOnDelete();
 
             // النوع (موظف، مدير، مسؤول...)
             $table->string('user_type')->default('employee');

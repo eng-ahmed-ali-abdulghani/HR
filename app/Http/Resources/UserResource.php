@@ -2,6 +2,8 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Vacation;
+use App\Models\Excuse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -31,6 +33,11 @@ class UserResource extends JsonResource
           //  'fcm_token'    => $this->fcm_token,
             // إذا كانت هناك علاقة لصورة
             'image'        => $this->image?->photo, // تأكد من علاقة image موجودة
+
+            'is_vacation_pending' => Vacation::where('employee_id', $this->id)->where('status', 'pending')->exists(),
+
+            'is_excuse_pending' => Excuse::where('employee_id', $this->id)->where('status', 'pending')->exists(),
+
         ];
     }
 }

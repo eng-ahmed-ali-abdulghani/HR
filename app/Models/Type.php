@@ -2,23 +2,18 @@
 
 namespace App\Models;
 
+use Astrotomic\Translatable\Translatable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Type extends Model
 {
-    use HasFactory;
+    use HasFactory, Translatable;
+    public $translatedAttributes = ['name'];
 
-    protected $fillable = ['name', 'kind'];
+    protected $fillable = ['type','name'];
 
-    public function excuses()
-    {
-        return $this->hasMany('App\Models\Excuse');
-    }
+    public $timestamps = false;
 
-    public function vacations()
-    {
-        return $this->hasMany('App\Models\Vacation');
-    }
 
 }

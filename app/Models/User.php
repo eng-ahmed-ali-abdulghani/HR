@@ -82,5 +82,4 @@ class User extends Authenticatable
         return $this->hasMany(Vacation::class, 'alternative_id');
     }
 
-
 }

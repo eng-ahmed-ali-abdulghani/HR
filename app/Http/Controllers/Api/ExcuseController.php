@@ -22,7 +22,8 @@ class ExcuseController extends Controller
 
     public function index()
     {
-        $excuses = $this->excuseService->index();
+        $employee = auth()->user();
+        $excuses = $this->excuseService->getExcuseForEmployee($employee);
         return $this->setCode(200)->setMessage('Success')->setData($excuses)->send();
     }
 
@@ -43,7 +44,7 @@ class ExcuseController extends Controller
     {
         $user_id = auth()->user()->id;
 
-        $excuse = Excuse::where('user_id', $user_id)->where('id', $id)->first();
+        $excuse = Excuse::where('employee_id', $user_id)->where('id', $id)->first();
 
         if (!$excuse) {
             return $this->setCode(404)->setMessage(__('messages.not_found'))->send();

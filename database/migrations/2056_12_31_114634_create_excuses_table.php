@@ -33,8 +33,11 @@ return new class extends Migration {
             // ملاحظات توضيحية إن وجدت
             $table->text('notes')->nullable();
 
-            // حالة اعتماد القائد
-            $table->boolean('leader_approval_status')->default(false);
+            // هل تمت الموافقة من القائد؟
+            $table->boolean('is_leader_approved')->default(false);
+            // من قام بالموافقة على الإجازة (اختياري لحين الموافقة)
+            $table->foreignId('approved_by_id')->nullable()->constrained('users')->cascadeOnUpdate()->nullOnDelete();
+
 
             // حالة العذر (مقبول، مرفوض، قيد الانتظار)
             $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');

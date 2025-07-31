@@ -21,13 +21,13 @@ return new class extends Migration
             $table->foreignId('employee_id')->constrained('users')->cascadeOnUpdate()->cascadeOnDelete();
 
             // نوع الخصم
-            $table->foreignId('deduction_type_id')->constrained('types')->cascadeOnUpdate()->cascadeOnDelete();
+            $table->foreignId('type_id')->constrained('types')->cascadeOnUpdate()->cascadeOnDelete();
 
             // سبب الخصم (نص حر)
-            $table->string('deduction_reason')->nullable();
+            $table->string('reason')->nullable();
 
             // من قام بالخصم (HR أو النظام)
-            $table->foreignId('submitted_by_id')->constrained('users')->cascadeOnUpdate()->cascadeOnDelete();
+            $table->foreignId('submitted_by_id')->nullable()->constrained('users')->cascadeOnUpdate()->cascadeOnDelete();
 
             // ملاحظات إضافية
             $table->text('notes')->nullable();

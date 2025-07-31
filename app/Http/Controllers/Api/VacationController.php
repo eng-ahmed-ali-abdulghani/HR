@@ -21,7 +21,8 @@ class VacationController extends Controller
 
     public function index()
     {
-        $vacations = $this->vacationService->index();
+        $employee = auth()->user();
+        $vacations = $this->vacationService->getVactionForEmployee($employee);
         return $this->setCode(200)->setMessage('Success')->setData($vacations)->send();
     }
 
@@ -44,7 +45,7 @@ class VacationController extends Controller
     {
         $user_id = auth()->user()->id;
 
-        $vacation = Vacation::where('user_id', $user_id)->where('id', $id)->first();
+        $vacation = Vacation::where('employee_id', $user_id)->where('id', $id)->first();
 
         if (!$vacation) {
             return $this->setCode(404)->setMessage(__('messages.not_found'))->send();

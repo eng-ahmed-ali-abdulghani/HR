@@ -12,7 +12,7 @@ class Excuse extends Model
     protected $table = 'excuses';
 
     protected $fillable = ['start_date', 'end_date', 'employee_id', 'type_id', 'reason', 'submitted_by_id', 'notes',
-        'leader_approval_status', 'status', 'is_due_to_official_mission',
+         'status', 'is_due_to_official_mission','is_leader_approved','approved_by_id'
     ];
 
     protected $casts = [

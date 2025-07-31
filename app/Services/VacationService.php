@@ -10,9 +10,8 @@ use Illuminate\Support\Facades\Auth;
 class VacationService
 {
 
-    public function index()
+    public function getVactionForEmployee($employee)
     {
-        $employee = auth()->user();
         $start_date = $employee->start_date;
         // رصيد الإجازات المسموح بيه للموظف
         $allowed_vacation_days = $employee->allowed_vacation_days;
