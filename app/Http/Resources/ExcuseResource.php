@@ -14,8 +14,8 @@ class ExcuseResource extends JsonResource
         return [
             'id' => $this->id,
 
-            'start_date' => $this->start_date,
-            'end_date' => $this->end_date,
+            'start_date'   => optional($this->start_date)->format('Y-m-d H:i:s'),
+            'end_date'     => optional($this->end_date)->format('Y-m-d H:i:s'),
 
             'days_count' => \Carbon\Carbon::parse($this->start_date)->diffInDays(\Carbon\Carbon::parse($this->end_date)) + 1,
 
@@ -28,7 +28,7 @@ class ExcuseResource extends JsonResource
             'reason' => $this->reason,
 
             'replacement_employee_id' => $this->replacementEmployee?->id,
-            'replacement_employee_name' => $this->replacementEmployee?->name,
+           'replacement_employee_name' => $this->replacementEmployee?->name,
 
             'submitted_by_id' => $this->submittedBy?->id,
             'submitted_by_name' => $this->submittedBy?->name,

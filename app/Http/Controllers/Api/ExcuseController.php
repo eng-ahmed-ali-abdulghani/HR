@@ -8,6 +8,7 @@ use App\Services\ExcuseService;
 use App\Helpers\ApiResponseHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\Excuses\StoreExcuseRequest;
+use Illuminate\Support\Facades\Auth;
 
 class ExcuseController extends Controller
 {
@@ -29,15 +30,16 @@ class ExcuseController extends Controller
 
     public function store(StoreExcuseRequest $request)
     {
-        $excuseExists = Excuse::whereDate('start_date', $request->start_date)->where('employee_id', $request->user()->id)->exists();
+        $data = $request->validated();
+        $excuseExists = Excuse::where('employee_id', Auth::id())->first();
 
         if ($excuseExists) {
             return $this->setCode(409)->setMessage(__('messages.vacation_booked'))->send();
         }
         // حفظ الإجازة باستخدام الخدمة
-        $vacation = $this->excuseService->store($request->validated());
+        $vacation = $this->excuseService->store($data);
 
-        return $this->setCode(201)->setMessage(__('messages.success'))->setData($vacation)->send();
+        return $this->setCode(201)->setMessage(__('Success'))->setData($vacation)->send();
     }
 
     public function destroy($id)

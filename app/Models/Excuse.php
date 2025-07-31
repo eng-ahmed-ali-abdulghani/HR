@@ -12,7 +12,7 @@ class Excuse extends Model
     protected $table = 'excuses';
 
     protected $fillable = ['start_date', 'end_date', 'employee_id', 'type_id', 'reason', 'submitted_by_id', 'notes',
-         'status', 'is_due_to_official_mission','is_leader_approved','approved_by_id'
+         'status', 'is_due_to_official_mission','is_leader_approved','approved_by_id','replacement_employee_id'
     ];
 
     protected $casts = [
@@ -43,5 +43,11 @@ class Excuse extends Model
     public function scopeApproved($query)
     {
         return $query->where('status', 'approved');
+    }
+
+    // الموظف البديل
+    public function replacementEmployee()
+    {
+        return $this->belongsTo(User::class, 'replacement_employee_id');
     }
 }

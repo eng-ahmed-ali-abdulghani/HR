@@ -21,7 +21,7 @@ class DeductionController extends Controller
         $now = Carbon::now();
 
         // جميع الخصومات
-        $deductions = Deduction::where('employee_id', $employeeId)->get();
+        $deductions = Deduction::where('employee_id', $employeeId)->latest()->get();
 
         // عدد الخصومات الكلي
         $totalCount = $deductions->count();

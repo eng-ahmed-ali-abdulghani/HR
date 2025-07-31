@@ -21,7 +21,8 @@ class StoreExcuseRequest extends FormRequest
             'type_id' => 'required|exists:types,id',
             'reason' => 'nullable|string|max:255',
             'notes' => 'nullable|string',
-            'leader_approval_status' => 'boolean',
+            'replacement_employee_id' => 'required|exists:users,id|different:employee_id',
+
         ];
     }
 }

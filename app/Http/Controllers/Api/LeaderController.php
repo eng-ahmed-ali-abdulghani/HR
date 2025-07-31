@@ -28,7 +28,7 @@ class LeaderController extends Controller
                     $q->where('status', 'pending');
                 },
             ]);
-        }])->where('leader_id', Auth::id())->get();
+        }])->where('leader_id', Auth::id())->latest()->get();
 
         // تجميع الموظفين من كل الأقسام
         $employees = $departments->flatMap(function ($dept) {

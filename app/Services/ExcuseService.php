@@ -6,6 +6,7 @@ use App\Models\Excuse;
 use App\Helpers\ApiResponseHelper;
 use App\Http\Resources\ExcuseResource;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class ExcuseService
 {
@@ -19,7 +20,7 @@ class ExcuseService
         $now = Carbon::now();
         // الإجمالي: من يوم التعيين حتى الآن
         $allExcuses = Excuse::with(['employee', 'type', 'submittedBy'])->where('employee_id', $employee->id)
-            ->whereDate('start_date', '>=', $start_date)->orderBy('start_date', 'desc')->get();
+            ->whereDate('start_date', '>=', $start_date)->orderBy('start_date', 'desc')->latest()->get();
 
         // عدد الإذنات خلال الشهر الحالي
         $monthlyExcusesCount = $allExcuses->filter(function ($excuse) use ($now) {
@@ -31,7 +32,7 @@ class ExcuseService
         $totalExcusesCount = $allExcuses->count();
 
         return [
-            'from_date' => $start_date,
+            'from_date' => $start_date->toDateString(),
             'monthly_excuses_count' => $monthlyExcusesCount,
             'total_excuses_count' => $totalExcusesCount,
             'excuses' => ExcuseResource::collection($allExcuses),

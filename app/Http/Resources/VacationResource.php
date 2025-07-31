@@ -14,8 +14,8 @@ class VacationResource extends JsonResource
         return [
             'id' => $this->id,
 
-            'start_date' => $this->start_date,
-            'end_date' => $this->end_date,
+            'start_date'   => optional($this->start_date)->format('Y-m-d H:i:s'),
+            'end_date'     => optional($this->end_date)->format('Y-m-d H:i:s'),
 
             'days_count' => \Carbon\Carbon::parse($this->start_date)->diffInDays(\Carbon\Carbon::parse($this->end_date)) + 1,
 

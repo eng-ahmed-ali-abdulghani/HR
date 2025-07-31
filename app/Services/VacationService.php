@@ -18,7 +18,7 @@ class VacationService
         $vacations = Vacation::with(['type', 'replacementEmployee', 'submittedBy', 'approvedBy'])
             ->where('employee_id', $employee->id)
             ->whereDate('start_date', '>=', $start_date)
-            ->orderBy('start_date', 'desc')
+            ->orderBy('start_date', 'desc')->latest()
             ->get();
 
         // احتساب فقط الإجازات المعتمدة (موافقة)

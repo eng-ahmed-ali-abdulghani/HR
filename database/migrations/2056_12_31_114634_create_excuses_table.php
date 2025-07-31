@@ -38,6 +38,8 @@ return new class extends Migration {
             // من قام بالموافقة على الإجازة (اختياري لحين الموافقة)
             $table->foreignId('approved_by_id')->nullable()->constrained('users')->cascadeOnUpdate()->nullOnDelete();
 
+            $table->foreignId('replacement_employee_id')->constrained('users')->cascadeOnUpdate()->cascadeOnDelete();
+
 
             // حالة العذر (مقبول، مرفوض، قيد الانتظار)
             $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
