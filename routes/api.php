@@ -1,7 +1,13 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\{VacationController, DeductionController, ExcuseController, HomeController, AuthController, LeaderController,TypeController};
+use App\Http\Controllers\Api\{VacationController,
+    DeductionController,
+    ExcuseController,
+    HomeController,
+    AuthController,
+    LeaderController,
+    TypeController,AttendanceController};
 
 
 Route::group(['middleware' => ["SetLang"]], function () {
@@ -10,7 +16,6 @@ Route::group(['middleware' => ["SetLang"]], function () {
     Route::post('login', [AuthController::class, 'Login']);
 
     Route::group(['middleware' => ["auth:sanctum"]], function () {
-
         // Auth
         Route::post('user/update', [AuthController::class, 'update']);
         Route::get('user/logout', [AuthController::class, 'logout']);
@@ -27,6 +32,9 @@ Route::group(['middleware' => ["SetLang"]], function () {
         // Deductions
         Route::resource('deductions', DeductionController::class);
 
+        // Deductions
+        Route::resource('attendances', AttendanceController::class);
+
         //leader
         Route::controller(LeaderController::class)->prefix('leader')->group(function () {
             Route::get('get-employees', 'getLeaderEmployees');
@@ -37,7 +45,6 @@ Route::group(['middleware' => ["SetLang"]], function () {
         });
 
         Route::get('get-type', [TypeController::class, 'GetType']);
-
 
     });
 

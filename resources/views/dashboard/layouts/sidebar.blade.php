@@ -26,7 +26,7 @@
     <nav class="sidebar-nav">
         <ul class="nav-list">
             <li class="nav-item">
-                <a href="{{route('dashboard.attendance.index')}}" class="nav-link ">
+                <a href="{{route('attendance.index')}}" class="nav-link ">
                     <i class="fas fa-car"></i>
                     <span>  حضور الموظفين  </span>
                 </a>

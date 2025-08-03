@@ -477,7 +477,6 @@
             <h1><i class="fas fa-users"></i> عرض المستخدمين والحضور</h1>
             <p>عرض بيانات المستخدمين في النظام مع إمكانية الوصول لتفاصيل الحضور والغياب</p>
         </div>
-
         <!-- Statistics -->
         <div class="stats-grid">
             <div class="stat-card total">
@@ -485,72 +484,29 @@
                     <i class="fas fa-users"></i>
                 </div>
                 <div class="stat-title">إجمالي المستخدمين</div>
-                <div class="stat-value" id="totalUsers">0</div>
+                <div class="stat-value" >{{ $stats['total_users'] ??null}}</div>
             </div>
             <div class="stat-card checkin">
                 <div class="stat-icon">
                     <i class="fas fa-sign-in-alt"></i>
                 </div>
                 <div class="stat-title">تسجيل دخول اليوم</div>
-                <div class="stat-value" id="totalCheckin">0</div>
+                <div class="stat-value" >{{$stats['total_checkin']??null}}</div>
             </div>
             <div class="stat-card checkout">
                 <div class="stat-icon">
                     <i class="fas fa-sign-out-alt"></i>
                 </div>
                 <div class="stat-title">تسجيل خروج اليوم</div>
-                <div class="stat-value" id="totalCheckout">0</div>
+                <div class="stat-value">{{$stats['total_checkout']??null}}</div>
             </div>
             <div class="stat-card absent">
                 <div class="stat-icon">
                     <i class="fas fa-user-times"></i>
                 </div>
                 <div class="stat-title">لم يسجل دخول</div>
-                <div class="stat-value" id="totalAbsent">0</div>
+                <div class="stat-value">{{$stats['total_absent']??null}}</div>
             </div>
-        </div>
-
-        <!-- Controls -->
-        <div class="controls">
-            <form method="GET" action="{{ route('dashboard.attendance.index') }}" id="filterForm">
-                <div class="controls-grid">
-                    <div class="form-group">
-                        <label><i class="fas fa-calendar-alt"></i> من تاريخ</label>
-                        <input type="date" class="form-control" name="date_from" id="dateFrom"
-                               value="{{ request('date_from', date('Y-m-d')) }}">
-                    </div>
-                    <div class="form-group">
-                        <label><i class="fas fa-calendar-alt"></i> إلى تاريخ</label>
-                        <input type="date" class="form-control" name="date_to" id="dateTo"
-                               value="{{ request('date_to', date('Y-m-d')) }}">
-                    </div>
-                    <div class="form-group">
-                        <label><i class="fas fa-toggle-on"></i> نوع التسجيل</label>
-                        <select class="form-control" name="attendance_type" id="attendanceType">
-                            <option value="">جميع الأنواع</option>
-                            <option value="checkin" {{ request('attendance_type') == 'checkin' ? 'selected' : '' }}>تسجيل دخول</option>
-                            <option value="checkout" {{ request('attendance_type') == 'checkout' ? 'selected' : '' }}>تسجيل خروج</option>
-                            <option value="absent" {{ request('attendance_type') == 'absent' ? 'selected' : '' }}>لم يسجل</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label><i class="fas fa-search"></i> البحث</label>
-                        <input type="text" class="form-control" name="search" id="searchInput"
-                               placeholder="البحث في الاسم أو المعرف..." value="{{ request('search') }}">
-                    </div>
-                </div>
-                <div class="btn-actions">
-                    <button type="submit" class="btn btn-success">
-                        <i class="fas fa-filter"></i> تطبيق الفلترة
-                    </button>
-                    <button type="button" class="btn btn-warning" onclick="clearFilters()">
-                        <i class="fas fa-refresh"></i> إعادة تعيين
-                    </button>
-                    <button type="button" class="btn btn-info" onclick="exportData()">
-                        <i class="fas fa-file-export"></i> تصدير البيانات
-                    </button>
-                </div>
-            </form>
         </div>
 
         <!-- Table -->
@@ -561,7 +517,6 @@
                     <th><i class="fas fa-hashtag"></i> المعرف</th>
                     <th><i class="fas fa-user"></i> المستخدم</th>
                     <th><i class="fas fa-calendar-check"></i> حالة الحضور</th>
-                    <th><i class="fas fa-clock"></i> آخر نشاط</th>
                     <th><i class="fas fa-cogs"></i> الإجراءات</th>
                 </tr>
                 </thead>
@@ -603,31 +558,16 @@
 
                                 @if($hasCheckout)
                                     <span class="status-badge status-checkout">
-                                        <i class="fas fa-sign-out-alt"></i> خروج
+                                        <i class="fas fa-sign-out-alt"></i>   خروج
                                     </span>
                                 @endif
 
                                 @if(!$hasCheckin && !$hasCheckout)
                                     <span class="status-badge status-absent">
-                                        <i class="fas fa-times"></i> لم يسجل
+                                        <i class="fas fa-times"></i>       لم يسجل
                                     </span>
                                 @endif
                             </div>
-                        </td>
-                        <td>
-                            @php
-                                $lastAttendance = $todayAttendances->first();
-                            @endphp
-                            @if($lastAttendance)
-                                <div class="time-badge">
-                                    {{ $lastAttendance->timestamp->format('H:i') }}
-                                </div>
-                                <small style="color: #7f8c8d; display: block; margin-top: 5px;">
-                                    {{ $lastAttendance->timestamp->format('Y-m-d') }}
-                                </small>
-                            @else
-                                <span style="color: #e74c3c;">لم يسجل بعد</span>
-                            @endif
                         </td>
                         <td>
                             <div class="action-buttons">
@@ -662,152 +602,4 @@
 @endsection
 
 @push('scripts')
-    <script>
-        // Initialize the application
-        document.addEventListener('DOMContentLoaded', function () {
-            updateStats();
-            setupEventListeners();
-        });
-
-        function setupEventListeners() {
-            // Auto-submit form when date changes
-            document.getElementById('dateFrom').addEventListener('change', function() {
-                if (this.value && document.getElementById('dateTo').value) {
-                    document.getElementById('filterForm').submit();
-                }
-            });
-
-            document.getElementById('dateTo').addEventListener('change', function() {
-                if (this.value && document.getElementById('dateFrom').value) {
-                    document.getElementById('filterForm').submit();
-                }
-            });
-        }
-
-        function updateStats() {
-            // Get stats from the current page data
-            const rows = document.querySelectorAll('#dataTable tr');
-            let totalUsers = rows.length;
-            let totalCheckin = 0;
-            let totalCheckout = 0;
-            let totalAbsent = 0;
-
-            rows.forEach(row => {
-                const attendanceCell = row.cells[2];
-                if (attendanceCell) {
-                    const hasCheckin = attendanceCell.querySelector('.status-checkin');
-                    const hasCheckout = attendanceCell.querySelector('.status-checkout');
-                    const hasAbsent = attendanceCell.querySelector('.status-absent');
-
-                    if (hasCheckin) totalCheckin++;
-                    if (hasCheckout) totalCheckout++;
-                    if (hasAbsent) totalAbsent++;
-                }
-            });
-
-            // Handle empty state
-            if (document.querySelector('.no-data')) {
-                totalUsers = 0;
-                totalCheckin = 0;
-                totalCheckout = 0;
-                totalAbsent = 0;
-            }
-
-            document.getElementById('totalUsers').textContent = totalUsers;
-            document.getElementById('totalCheckin').textContent = totalCheckin;
-            document.getElementById('totalCheckout').textContent = totalCheckout;
-            document.getElementById('totalAbsent').textContent = totalAbsent;
-        }
-
-        function clearFilters() {
-            // Reset all form fields
-            document.getElementById('dateFrom').value = '{{ date("Y-m-d") }}';
-            document.getElementById('dateTo').value = '{{ date("Y-m-d") }}';
-            document.getElementById('attendanceType').value = '';
-            document.getElementById('searchInput').value = '';
-
-            // Submit the form to apply the reset
-            document.getElementById('filterForm').submit();
-        }
-
-        function exportData() {
-            // Create export URL with current filters
-            const form = document.getElementById('filterForm');
-            const formData = new FormData(form);
-            const params = new URLSearchParams(formData);
-
-            // Add export parameter
-            params.append('export', 'csv');
-
-            // Create download link
-            const exportUrl = `{{ route('dashboard.attendance.index') }}?${params.toString()}`;
-
-            // Create temporary link and click it
-            const link = document.createElement('a');
-            link.href = exportUrl;
-            link.download = `attendance_export_${new Date().toISOString().split('T')[0]}.csv`;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
-
-        function viewUserDetails(userId) {
-            // Get current date filters
-            const dateFrom = document.getElementById('dateFrom').value;
-            const dateTo = document.getElementById('dateTo').value;
-
-            // Build URL with date parameters
-            let detailsUrl = `/dashboard/users/${userId}/attendance`;
-            if (dateFrom) {
-                detailsUrl += `?date_from=${dateFrom}`;
-                if (dateTo) {
-                    detailsUrl += `&date_to=${dateTo}`;
-                }
-            }
-
-            window.location.href = detailsUrl;
-        }
-
-        // Quick date filters
-        function setDateFilter(days) {
-            const today = new Date();
-            const fromDate = new Date(today);
-            fromDate.setDate(today.getDate() - days);
-
-            document.getElementById('dateFrom').value = fromDate.toISOString().split('T')[0];
-            document.getElementById('dateTo').value = today.toISOString().split('T')[0];
-
-            document.getElementById('filterForm').submit();
-        }
-
-        // Add quick filter buttons
-        document.addEventListener('DOMContentLoaded', function() {
-            const btnActions = document.querySelector('.btn-actions');
-
-            // Create quick filter buttons
-            const quickFilters = [
-                { label: 'اليوم', days: 0 },
-                { label: 'أمس', days: 1 },
-                { label: 'آخر 7 أيام', days: 7 },
-                { label: 'آخر 30 يوم', days: 30 }
-            ];
-
-            quickFilters.forEach(filter => {
-                const btn = document.createElement('button');
-                btn.type = 'button';
-                btn.className = 'btn btn-secondary';
-                btn.innerHTML = `<i class="fas fa-calendar"></i> ${filter.label}`;
-                btn.onclick = () => {
-                    if (filter.days === 0) {
-                        document.getElementById('dateFrom').value = new Date().toISOString().split('T')[0];
-                        document.getElementById('dateTo').value = new Date().toISOString().split('T')[0];
-                    } else {
-                        setDateFilter(filter.days);
-                    }
-                    document.getElementById('filterForm').submit();
-                };
-                btnActions.appendChild(btn);
-            });
-        });
-    </script>
 @endpush

@@ -18,7 +18,7 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             TypeSeeder::class,
             VacationSeeder::class,
-
+            DeductionSeeder::class,
         ]);
     }
 }

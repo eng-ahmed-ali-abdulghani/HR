@@ -24,11 +24,7 @@ class HomeController extends Controller
         /**
          * الإجازات
          */
-        $vacations = Vacation::with(['type', 'replacementEmployee', 'submittedBy', 'leaderApprover', 'hrApprover', 'ceoApprover'])
-            ->where('employee_id', $employee->id)
-            ->whereDate('start_date', '>=', $start_date)
-            ->orderByDesc('start_date')
-            ->get();
+        $vacations = Vacation::where('employee_id', $employee->id)->whereDate('start_date', '>=', $start_date)->orderByDesc('start_date')->get();
 
         $totalDays = $vacations->sum(fn($vac) =>
             Carbon::parse($vac->start_date)->diffInDays(Carbon::parse($vac->end_date)) + 1

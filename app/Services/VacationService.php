@@ -38,7 +38,6 @@ class VacationService
     }
 
 
-
     public function store($data)
     {
         $employee = Auth::user();
@@ -53,17 +52,19 @@ class VacationService
             ->whereDate('start_date', '>=', $start_date)
             ->get()
             ->sum(function ($vac) {
-                return \Carbon\Carbon::parse($vac->start_date)
-                        ->diffInDays(\Carbon\Carbon::parse($vac->end_date)) + 1;
+                return \Carbon\Carbon::parse($vac->start_date)->diffInDays(\Carbon\Carbon::parse($vac->end_date)) + 1;
             });
 
         // احسب عدد الأيام المطلوبة في الطلب الحالي
-        $requestedDays = \Carbon\Carbon::parse($data['start_date'])
-                ->diffInDays(\Carbon\Carbon::parse($data['end_date'])) + 1;
+        $requestedDays = \Carbon\Carbon::parse($data['start_date'])->diffInDays(\Carbon\Carbon::parse($data['end_date'])) + 1;
 
         // تحقق من توفر الأيام
         if ($usedDays + $requestedDays > $allowed_days) {
-            return  'لا يمكن تقديم الإجازة، لقد استنفدت كل أيام الإجازة المسموح بها.';
+            return [
+                'code' => 401,
+                'message' => 'لا يمكن تقديم الإجازة، لقد استنفدت كل أيام الإجازة المسموح بها.',
+                'data' => null,
+            ];
         }
 
         // إنشاء سجل الإجازة
@@ -84,7 +85,6 @@ class VacationService
             'data' => new VacationResource($vacation),
         ];
     }
-
 
 
     public function destroy($id)
