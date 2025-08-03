@@ -9,14 +9,11 @@ use App\Models\User;
 use App\Models\Type;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+
 class VacationSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run()
     {
-        // تأكد من وجود بيانات في الجداول المرتبطة
         $employees = User::all();
         $types = Type::all();
 
@@ -25,7 +22,11 @@ class VacationSeeder extends Seeder
             $employee = $employees->random();
             $replacement = $employees->where('id', '!=', $employee->id)->random();
             $submitted_by = $employees->random();
-            $approved_by = rand(0, 1) ? $employees->random()->id : null;
+
+            // موافقات عشوائية
+            $leader_status = collect(['pending', 'approved', 'rejected'])->random();
+            $hr_status = collect(['pending', 'approved', 'rejected'])->random();
+            $ceo_status = collect(['pending', 'approved', 'rejected'])->random();
 
             $start = Carbon::now()->addDays(rand(1, 30));
             $end = (clone $start)->addDays(rand(1, 7));
@@ -39,9 +40,14 @@ class VacationSeeder extends Seeder
                 'replacement_employee_id' => $replacement->id,
                 'submitted_by_id' => $submitted_by->id,
                 'notes' => 'ملاحظات للإجازة رقم ' . $i,
-                'is_leader_approved' => (bool)rand(0, 1),
-                'status' => collect(['pending', 'approved', 'rejected'])->random(),
-                'approved_by_id' => $approved_by,
+                'is_leader_approved' => $leader_status,
+                'leader_approved_id' => $leader_status === 'approved' ? $employees->random()->id : null,
+
+                'is_hr_approved' => $hr_status,
+                'hr_approved_id' => $hr_status === 'approved' ? $employees->random()->id : null,
+
+                'is_ceo_approved' => $ceo_status,
+                'ceo_approved_id' => $ceo_status === 'approved' ? $employees->random()->id : null,
             ]);
         }
     }

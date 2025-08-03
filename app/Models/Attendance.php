@@ -8,4 +8,15 @@ use Illuminate\Database\Eloquent\Model;
 class Attendance extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'employee_id',
+        'timestamp',
+        'type'
+    ];
+
+    public function employee()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

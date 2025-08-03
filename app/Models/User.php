@@ -49,6 +49,12 @@ class User extends Authenticatable
     ];
 
 
+    public function attendances()
+    {
+        return $this->hasMany(Attendance::class, 'employee_id');
+
+    }
+
     public function department()
     {
         return $this->belongsTo(Department::class);
@@ -64,6 +70,7 @@ class User extends Authenticatable
     {
         return $this->hasMany(Excuse::class, 'employee_id');
     }
+
     public function vacations()
     {
         return $this->hasMany(Vacation::class, 'employee_id');
@@ -73,7 +80,6 @@ class User extends Authenticatable
     {
         return $this->hasMany(Excuse::class, 'actor_id');
     }
-
 
 
     public function actedVacations()

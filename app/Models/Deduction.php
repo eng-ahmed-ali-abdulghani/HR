@@ -17,37 +17,51 @@ class Deduction extends Model
         'submitted_by_id',
         'notes',
         'is_automatic',
-        'is_approved',
+        'is_leader_approved',
+        'leader_approved_id',
+        'is_hr_approved',
+        'hr_approved_id',
+        'is_ceo_approved',
+        'ceo_approved_id',
     ];
-
-    protected $casts = [
-        'is_automatic' => 'boolean',
-        'is_approved' => 'boolean',
-        'deduction_days' => 'decimal:2',
-    ];
-
 
     /**
-     * الموظف المتأثر بالخصم
+     * العلاقات
      */
+
+    // الموظف المتأثر بالخصم
     public function employee()
     {
         return $this->belongsTo(User::class, 'employee_id');
     }
 
-    /**
-     * نوع الخصم
-     */
+    // نوع الخصم
     public function type()
     {
-        return $this->belongsTo(Type::class, 'type_id');
+        return $this->belongsTo(Type::class);
     }
 
-    /**
-     * من قام بإضافة الخصم (HR أو النظام)
-     */
+    // من قام بإدخال الخصم (HR أو النظام)
     public function submittedBy()
     {
         return $this->belongsTo(User::class, 'submitted_by_id');
+    }
+
+    // القائد الذي وافق
+    public function leaderApprover()
+    {
+        return $this->belongsTo(User::class, 'leader_approved_id');
+    }
+
+    // مسؤول HR
+    public function hrApprover()
+    {
+        return $this->belongsTo(User::class, 'hr_approved_id');
+    }
+
+    // المدير التنفيذي
+    public function ceoApprover()
+    {
+        return $this->belongsTo(User::class, 'ceo_approved_id');
     }
 }

@@ -15,20 +15,22 @@ class ExcuseService
 
     public function getExcuseForEmployee($employee)
     {
-        $start_date = $employee->start_date;
+        $start_date = \Carbon\Carbon::parse($employee->start_date);
+        $now = \Carbon\Carbon::now();
 
-        $now = Carbon::now();
-        // الإجمالي: من يوم التعيين حتى الآن
-        $allExcuses = Excuse::with(['employee', 'type', 'submittedBy'])->where('employee_id', $employee->id)
-            ->whereDate('start_date', '>=', $start_date)->orderBy('start_date', 'desc')->latest()->get();
+        // اجلب الإذنات من يوم التعيين حتى الآن
+        $allExcuses = Excuse::where('employee_id', $employee->id)->whereDate('start_date', '>=', $start_date)
+            ->orderBy('start_date', 'desc')
+            ->get();
 
         // عدد الإذنات خلال الشهر الحالي
         $monthlyExcusesCount = $allExcuses->filter(function ($excuse) use ($now) {
-            return $excuse->start_date->month === $now->month &&
+            return $excuse->start_date instanceof \Carbon\Carbon &&
+                $excuse->start_date->month === $now->month &&
                 $excuse->start_date->year === $now->year;
         })->count();
 
-        // إجمالي الإذنات منذ التعيين
+        // إجمالي عدد الإذنات
         $totalExcusesCount = $allExcuses->count();
 
         return [
@@ -37,22 +39,26 @@ class ExcuseService
             'total_excuses_count' => $totalExcusesCount,
             'excuses' => ExcuseResource::collection($allExcuses),
         ];
-
     }
 
 
     public function store($data)
     {
-        $excuse = Excuse::create([
-            'start_date' => $data['start_date'], 'end_date' => $data['end_date'],
-            'notes' => $data['notes'], 'reason' => $data['reason'],
+        $employee = Auth::user();
+        // يمكن إضافة تحقق من وجود بيانات مطلوبة هنا أو استخدام FormRequest
+        Excuse::create([
+            'start_date' => $data['start_date'],
+            'end_date' => $data['end_date'],
+            'notes' => $data['notes'] ?? null,
+            'reason' => $data['reason'] ?? null,
             'type_id' => $data['type_id'],
-            'replacement_employee_id' => $data['replacement_employee_id'],
-            'submitted_by_id' => Auth::id(), 'employee_id' => Auth::id(),
+            'replacement_employee_id' => $data['replacement_employee_id'] ?? null,
+            'submitted_by_id' => $employee->id,
+            'employee_id' => $employee->id,
         ]);
-
-        return new ExcuseResource($excuse);
+        return 'تم تقديم طلب العذر بنجاح.';
     }
+
 
     public function destroy($id)
     {

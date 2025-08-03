@@ -15,29 +15,6 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        User::create([
-            'name' => 'test',
-            'username' => 'test',
-            'code' => '123',
-            'phone' => '123456789',
-            'password' => Hash::make('password'),
-        ]);
-        User::create([
-            'name' => 'qutp',
-            'username' => 'qutp',
-            'code' => '111',
-            'phone' => '111111111',
-            'password' => Hash::make('123'),
-        ]);
-        User::create([
-            'name' => 'may',
-            'username' => 'may',
-            'code' => '000',
-            'phone' => '000000000',
-            'password' => Hash::make('123'),
-            'user_type' => 'admin',
-        ]);
-
         $names = [
             'Marwan Khaled',
             'Moustafa Marwan',
@@ -56,6 +33,10 @@ class UserSeeder extends Seeder
             'Ahmed Ali',
             'Mostafa Ali',
             'Hussien Salem',
+        ];
+
+        $userIds = [
+            72, 77, 78, 81, 84, 85, 86, 87, 88, 92, 208, 209, 210, 211, 212, 213, 214
         ];
 
         foreach ($names as $i => $name) {
@@ -77,7 +58,10 @@ class UserSeeder extends Seeder
                 'department_id' => 1,
                 'user_type' => 'employee',
                 'fcm_token' => null,
+                'fingerprint_employee_id' => $userIds[$i],
             ]);
         }
+
+
     }
 }

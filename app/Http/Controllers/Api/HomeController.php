@@ -12,43 +12,58 @@ class HomeController extends Controller
 {
     use ApiResponseHelper;
 
+
     public function home()
     {
         $employee = auth()->user();
 
-        $start_date = $employee->start_date;
+        $start_date = Carbon::parse($employee->start_date); // تأكد من أنه Carbon
         $allowed_vacation_days = $employee->allowed_vacation_days;
         $now = Carbon::now();
 
-        // الإجازات
-        $vacations = Vacation::with(['type', 'replacementEmployee', 'submittedBy', 'approvedBy'])->where('employee_id', $employee->id)
-            ->whereDate('start_date', '>=', $start_date)->orderBy('start_date', 'desc')->get();
-
-        $totalDays = $vacations->sum(fn($vac) => Carbon::parse($vac->start_date)->diffInDays(Carbon::parse($vac->end_date)) + 1);
-        $remainingDays = max(0, $allowed_vacation_days - $totalDays);
-
-        // الأعذار
-        $excuses = Excuse::with(['employee', 'type', 'submittedBy'])
+        /**
+         * الإجازات
+         */
+        $vacations = Vacation::with(['type', 'replacementEmployee', 'submittedBy', 'leaderApprover', 'hrApprover', 'ceoApprover'])
             ->where('employee_id', $employee->id)
             ->whereDate('start_date', '>=', $start_date)
-            ->orderBy('start_date', 'desc')
+            ->orderByDesc('start_date')
+            ->get();
+
+        $totalDays = $vacations->sum(fn($vac) =>
+            Carbon::parse($vac->start_date)->diffInDays(Carbon::parse($vac->end_date)) + 1
+        );
+
+        $remainingDays = max(0, $allowed_vacation_days - $totalDays);
+
+        /**
+         * الأعذار
+         */
+        $excuses = Excuse::where('employee_id', $employee->id)
+            ->whereDate('start_date', '>=', $start_date)
+            ->orderByDesc('start_date')
             ->get();
 
         $monthlyExcusesCount = $excuses->filter(function ($excuse) use ($now) {
-            $start = Carbon::parse($excuse->start_date);
-            return $start->month === $now->month && $start->year === $now->year;
+            return Carbon::parse($excuse->start_date)->isSameMonth($now);
         })->count();
 
-        // الخصومات
+        /**
+         * الخصومات
+         */
         $deductions = Deduction::where('employee_id', $employee->id)
             ->whereDate('created_at', '>=', $start_date)
             ->get();
 
         $monthlyDeductionsCount = $deductions->filter(function ($deduction) use ($now) {
-            return $deduction->created_at->month === $now->month && $deduction->created_at->year === $now->year;
+            return $deduction->created_at->isSameMonth($now);
         })->count();
 
-        $data = [
+        /**
+         * التجهيز للإرسال
+         */
+        return $this->setCode(200)->setMessage('Success')->setData([
+
             'from_date' => $start_date->toDateString(),
 
             'allowed_vacation_days' => $allowed_vacation_days,
@@ -60,8 +75,7 @@ class HomeController extends Controller
 
             'monthly_deductions_count' => $monthlyDeductionsCount,
             'total_deductions_count' => $deductions->count(),
-        ];
-        return $this->setCode(200)->setMessage('Success')->setData($data)->send();
+        ])->send();
     }
 
 

@@ -20,30 +20,27 @@ class DeductionController extends Controller
         $employeeId = Auth::id();
         $now = Carbon::now();
 
-        // جميع الخصومات
         $deductions = Deduction::where('employee_id', $employeeId)->latest()->get();
 
-        // عدد الخصومات الكلي
         $totalCount = $deductions->count();
 
-        // عدد خصومات هذا الشهر
         $monthlyCount = $deductions->filter(function ($deduction) use ($now) {
-            return $deduction->created_at->month === $now->month &&
-                $deduction->created_at->year === $now->year;
+            return optional($deduction->created_at)->month === $now->month &&
+                optional($deduction->created_at)->year === $now->year;
         })->count();
 
-        // مجموع أيام الخصم
         $totalDeductionDays = $deductions->sum('deduction_days');
 
-        $data = [
-            'total_count' => $totalCount,
-            'monthly_count' => $monthlyCount,
-            'total_deduction_days' => $totalDeductionDays,
-            'deductions' => DeductionResource::collection($deductions),
-        ];
-        return $this->setCode(200)->setMessage('Success')->setData($data)->send();
-
+        return $this->setCode(200)
+            ->setMessage('تم جلب الخصومات بنجاح')
+            ->setData([
+                'total_count' => $totalCount,
+                'monthly_count' => $monthlyCount,
+                'total_deduction_days' => $totalDeductionDays,
+                'deductions' => DeductionResource::collection($deductions),
+            ])->send();
     }
+
 
 
 }

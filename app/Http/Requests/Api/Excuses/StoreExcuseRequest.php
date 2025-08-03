@@ -16,8 +16,8 @@ class StoreExcuseRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'start_date' => 'required|date',
-            'end_date' => 'required|date|after_or_equal:start_date',
+            'start_date' => 'required|date|date_format:Y-m-d H:i:s',
+            'end_date'   => 'required|date|after_or_equal:start_date|date_format:Y-m-d H:i:s',
             'type_id' => 'required|exists:types,id',
             'reason' => 'nullable|string|max:255',
             'notes' => 'nullable|string',

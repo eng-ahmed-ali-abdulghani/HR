@@ -26,49 +26,12 @@
     <nav class="sidebar-nav">
         <ul class="nav-list">
             <li class="nav-item">
-                <a href="#" class="nav-link ">
-                    <i class="fas fa-home"></i>
-                    <span>الرئيسية</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{{route('user.index')}}" class="nav-link ">
+                <a href="{{route('dashboard.attendance.index')}}" class="nav-link ">
                     <i class="fas fa-car"></i>
                     <span>  حضور الموظفين  </span>
                 </a>
             </li>
-            <li class="nav-item">
-                <a href=""
-                   class="nav-link ">
-                    <i class="fas fa-tags"></i>
-                    <span>ادارة الاقسام  </span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="" class="nav-link ">
-                    <i class="fas fa-tags"></i>
-                    <span>ادارة الاجازات   </span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="" class="nav-link ">
-                    <i class="fas fa-tags"></i>
-                    <span>ادارة الاذونات    </span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="" class="nav-link ">
-                    <i class="fas fa-tags"></i>
-                    <span>ادارة الخصومات  </span>
-                </a>
-            </li>
-            {{-- <li class="nav-item">
-              <a href="#" class="nav-link {{ request()->routeIs('admin.settings.*') ? 'active' : '' }}">
-                <i class="fas fa-cog"></i>
-                <span>الإعدادات</span>
-              </a>
-            </li> --}}
-        </ul>
+
     </nav>
 
     <!-- Sidebar Footer -->

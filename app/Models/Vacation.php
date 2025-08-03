@@ -13,26 +13,27 @@ class Vacation extends Model
         'start_date',
         'end_date',
         'employee_id',
+        'replacement_employee_id',
         'type_id',
         'reason',
-        'replacement_employee_id',
         'submitted_by_id',
-        'approved_by_id',
         'notes',
         'is_leader_approved',
-        'status',
+        'leader_approved_id',
+        'is_hr_approved',
+        'hr_approved_id',
+        'is_ceo_approved',
+        'ceo_approved_id',
     ];
+
+    /**
+     * Relationships
+     */
 
     // الموظف صاحب الإجازة
     public function employee()
     {
         return $this->belongsTo(User::class, 'employee_id');
-    }
-
-    // نوع الإجازة
-    public function type()
-    {
-        return $this->belongsTo(Type::class, 'type_id');
     }
 
     // الموظف البديل
@@ -41,19 +42,33 @@ class Vacation extends Model
         return $this->belongsTo(User::class, 'replacement_employee_id');
     }
 
+    // نوع الإجازة
+    public function type()
+    {
+        return $this->belongsTo(Type::class);
+    }
+
     // من قدّم الطلب
     public function submittedBy()
     {
         return $this->belongsTo(User::class, 'submitted_by_id');
     }
 
-    // من قام بالموافقة
-    public function approvedBy()
+    // القائد الذي وافق
+    public function leaderApprover()
     {
-        return $this->belongsTo(User::class, 'approved_by_id');
+        return $this->belongsTo(User::class, 'leader_approved_id');
     }
-    public function scopeApproved($query)
+
+    // مسؤول الـ HR
+    public function hrApprover()
     {
-        return $query->where('status', 'approved');
+        return $this->belongsTo(User::class, 'hr_approved_id');
+    }
+
+    // المدير التنفيذي
+    public function ceoApprover()
+    {
+        return $this->belongsTo(User::class, 'ceo_approved_id');
     }
 }

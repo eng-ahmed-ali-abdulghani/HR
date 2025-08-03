@@ -14,9 +14,8 @@ class ExcuseResource extends JsonResource
         return [
             'id' => $this->id,
 
-            'start_date'   => optional($this->start_date)->format('Y-m-d H:i:s'),
-            'end_date'     => optional($this->end_date)->format('Y-m-d H:i:s'),
-
+            'start_date' => $this->start_date,
+            'end_date' => $this->end_date,
             'days_count' => \Carbon\Carbon::parse($this->start_date)->diffInDays(\Carbon\Carbon::parse($this->end_date)) + 1,
 
             'employee_id' => $this->employee?->id,
@@ -28,22 +27,30 @@ class ExcuseResource extends JsonResource
             'reason' => $this->reason,
 
             'replacement_employee_id' => $this->replacementEmployee?->id,
-           'replacement_employee_name' => $this->replacementEmployee?->name,
+            'replacement_employee_name' => $this->replacementEmployee?->name,
 
             'submitted_by_id' => $this->submittedBy?->id,
             'submitted_by_name' => $this->submittedBy?->name,
 
-            'approved_by_id' => $this->approvedBy?->id,
-            'approved_by_name' => $this->approvedBy?->name,
+            // موافقات منفصلة
+            'is_leader_approved' => $this->is_leader_approved,
+            'leader_approved_id' => $this->leaderApprover?->id,
+            'leader_approver_name' => $this->leaderApprover?->name,
+
+            'is_hr_approved' => $this->is_hr_approved,
+            'hr_approved_id' => $this->hrApprover?->id,
+            'hr_approver_name' => $this->hrApprover?->name,
+
+            'is_ceo_approved' => $this->is_ceo_approved,
+            'ceo_approved_id' => $this->ceoApprover?->id,
+            'ceo_approver_name' => $this->ceoApprover?->name,
+
 
             'notes' => $this->notes,
 
-            'is_leader_approved' => $this->is_leader_approved,
-
-            'status' => $this->status,
-
             'created_at' => $this->created_at?->toDateTimeString(),
         ];
+
 
     }
 }

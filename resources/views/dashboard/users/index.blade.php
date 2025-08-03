@@ -502,7 +502,8 @@
 
         <!-- Import Section -->
         <div id="importSection" class="import-section">
-            <h3 style="color: #2c3e50; margin-bottom: 20px;"><i class="fas fa-file-import"></i> استيراد بيانات الحضور والغياب</h3>
+            <h3 style="color: #2c3e50; margin-bottom: 20px;"><i class="fas fa-file-import"></i> استيراد بيانات الحضور
+                والغياب</h3>
 
             <div class="import-info">
                 <i class="fas fa-info-circle"></i>
@@ -535,7 +536,8 @@
 
         <!-- Add Attendance Form -->
         <div id="addAttendanceSection" class="import-section">
-            <h3 style="color: #2c3e50; margin-bottom: 20px;"><i class="fas fa-plus-circle"></i> إضافة حضور وغياب يدوياً</h3>
+            <h3 style="color: #2c3e50; margin-bottom: 20px;"><i class="fas fa-plus-circle"></i> إضافة حضور وغياب يدوياً
+            </h3>
 
             <div class="controls-grid" style="margin-bottom: 20px;">
                 <div class="form-group">
@@ -696,7 +698,7 @@
         let filteredData = [...users];
 
         // Initialize the application
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             updateStats();
             renderTable();
             setupEventListeners();
@@ -827,7 +829,7 @@
             ].join('\n');
 
             // Create and download file
-            const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
+            const blob = new Blob(['\ufeff' + csvContent], {type: 'text/csv;charset=utf-8;'});
             const link = document.createElement('a');
             link.href = URL.createObjectURL(blob);
             link.download = `attendance_export_${new Date().toISOString().split('T')[0]}.csv`;
@@ -877,7 +879,7 @@
             if (!file) return;
 
             const reader = new FileReader();
-            reader.onload = function(e) {
+            reader.onload = function (e) {
                 try {
                     // Here you would parse the CSV/Excel file
                     // This is a simplified example
@@ -920,7 +922,7 @@
             ];
 
             const csvContent = [headers.join(','), ...sampleData].join('\n');
-            const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
+            const blob = new Blob(['\ufeff' + csvContent], {type: 'text/csv;charset=utf-8;'});
             const link = document.createElement('a');
             link.href = URL.createObjectURL(blob);
             link.download = 'attendance_template.csv';

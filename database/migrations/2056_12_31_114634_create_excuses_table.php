@@ -9,46 +9,39 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('excuses', function (Blueprint $table) {
-
             $table->id();
 
-            // تاريخ بدء العذر
-            $table->dateTime('start_date');
+            // التواريخ
+            $table->dateTime('start_date'); // تاريخ بدء العذر
+            $table->dateTime('end_date');   // تاريخ نهاية العذر
 
-            // تاريخ نهاية العذر
-            $table->dateTime('end_date');
+            // بيانات الموظف
+            $table->foreignId('employee_id')->constrained('users')->cascadeOnUpdate()->cascadeOnDelete(); // الموظف صاحب العذر
+            $table->foreignId('replacement_employee_id')->constrained('users')->cascadeOnUpdate()->cascadeOnDelete(); // الموظف البديل
 
-            // الموظف صاحب العذر
-            $table->foreignId('employee_id')->constrained('users')->cascadeOnUpdate()->cascadeOnDelete();
+            // نوع العذر والسبب
+            $table->foreignId('type_id')->constrained('types')->cascadeOnUpdate()->cascadeOnDelete(); // نوع العذر
+            $table->string('reason')->nullable(); // سبب العذر
 
-            // نوع العذر (طبي، تأخير، ... إلخ)
-            $table->foreignId('type_id')->constrained('types')->cascadeOnUpdate()->cascadeOnDelete();
-
-            // السبب نص حر
-            $table->string('reason')->nullable();
-
-            // الشخص الذي قدّم العذر في النظام (HR أو مدير)
+            // من قدّم الطلب (HR أو القائد)
             $table->foreignId('submitted_by_id')->constrained('users')->cascadeOnUpdate()->cascadeOnDelete();
 
-            // ملاحظات توضيحية إن وجدت
+            // ملاحظات إضافية
             $table->text('notes')->nullable();
 
-            // هل تمت الموافقة من القائد؟
-            $table->boolean('is_leader_approved')->default(false);
-            // من قام بالموافقة على الإجازة (اختياري لحين الموافقة)
-            $table->foreignId('approved_by_id')->nullable()->constrained('users')->cascadeOnUpdate()->nullOnDelete();
+            // الموافقات
+            $table->enum('is_leader_approved', ['pending', 'approved', 'rejected'])->default('pending'); // هل تمت الموافقة من القائد؟
+            $table->foreignId('leader_approved_id')->nullable()->constrained('users')->cascadeOnUpdate()->nullOnDelete();
 
-            $table->foreignId('replacement_employee_id')->constrained('users')->cascadeOnUpdate()->cascadeOnDelete();
+            $table->enum('is_hr_approved', ['pending', 'approved', 'rejected'])->default('pending'); // هل تمت الموافقة من HR؟
+            $table->foreignId('hr_approved_id')->nullable()->constrained('users')->cascadeOnUpdate()->nullOnDelete();
 
-
-            // حالة العذر (مقبول، مرفوض، قيد الانتظار)
-            $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
-
-            // هل العذر بسبب مهمة رسمية؟
-            $table->boolean('is_due_to_official_mission')->default(false);
+            $table->enum('is_ceo_approved', ['pending', 'approved', 'rejected'])->default('pending'); // هل تمت الموافقة من المدير التنفيذي؟
+            $table->foreignId('ceo_approved_id')->nullable()->constrained('users')->cascadeOnUpdate()->nullOnDelete();
 
             $table->timestamps();
         });
+
     }
 
     public function down(): void

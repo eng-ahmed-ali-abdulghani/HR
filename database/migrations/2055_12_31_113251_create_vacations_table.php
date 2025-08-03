@@ -12,26 +12,19 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('vacations', function (Blueprint $table) {
-
             $table->id();
 
-            // تاريخ بدء الإجازة
-            $table->dateTime('start_date');
+            // التواريخ
+            $table->dateTime('start_date'); // تاريخ بدء الإجازة
+            $table->dateTime('end_date');   // تاريخ نهاية الإجازة
 
-            // تاريخ نهاية الإجازة
-            $table->dateTime('end_date');
+            // بيانات الموظف
+            $table->foreignId('employee_id')->constrained('users')->cascadeOnUpdate()->cascadeOnDelete(); // الموظف صاحب الإجازة
+            $table->foreignId('replacement_employee_id')->constrained('users')->cascadeOnUpdate()->cascadeOnDelete(); // الموظف البديل
 
-            // الموظف صاحب الإجازة
-            $table->foreignId('employee_id')->constrained('users')->cascadeOnUpdate()->cascadeOnDelete();
-
-            // نوع الإجازة
-            $table->foreignId('type_id')->constrained('types')->cascadeOnUpdate()->cascadeOnDelete();
-
-            // سبب الإجازة
-            $table->string('reason')->nullable();
-
-            // الموظف البديل خلال الإجازة
-            $table->foreignId('replacement_employee_id')->constrained('users')->cascadeOnUpdate()->cascadeOnDelete();
+            // نوع الإجازة والسبب
+            $table->foreignId('type_id')->constrained('types')->cascadeOnUpdate()->cascadeOnDelete(); // نوع الإجازة
+            $table->string('reason')->nullable(); // سبب الإجازة
 
             // من قدّم الطلب (HR أو القائد)
             $table->foreignId('submitted_by_id')->constrained('users')->cascadeOnUpdate()->cascadeOnDelete();
@@ -39,14 +32,15 @@ return new class extends Migration {
             // ملاحظات إضافية
             $table->text('notes')->nullable();
 
-            // هل تمت الموافقة من القائد؟
-            $table->boolean('is_leader_approved')->default(false);
+            // الموافقات
+            $table->enum('is_leader_approved', ['pending', 'approved', 'rejected'])->default('pending'); // هل تمت الموافقة من القائد؟
+            $table->foreignId('leader_approved_id')->nullable()->constrained('users')->cascadeOnUpdate()->nullOnDelete();
 
-            // حالة الإجازة
-            $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
+            $table->enum('is_hr_approved', ['pending', 'approved', 'rejected'])->default('pending'); // هل تمت الموافقة من HR؟
+            $table->foreignId('hr_approved_id')->nullable()->constrained('users')->cascadeOnUpdate()->nullOnDelete();
 
-            // من قام بالموافقة على الإجازة (اختياري لحين الموافقة)
-            $table->foreignId('approved_by_id')->nullable()->constrained('users')->cascadeOnUpdate()->nullOnDelete();
+            $table->enum('is_ceo_approved', ['pending', 'approved', 'rejected'])->default('pending'); // هل تمت الموافقة من المدير التنفيذي؟
+            $table->foreignId('ceo_approved_id')->nullable()->constrained('users')->cascadeOnUpdate()->nullOnDelete();
 
             $table->timestamps();
         });
