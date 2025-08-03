@@ -11,6 +11,5 @@ Route::middleware('guest')->controller(LoginController::class)->group(function (
 });
 
 
-Route::get('/', [AttendanceController::class, 'index'])->name('attendance.index');
 
-
+Route::resource('attendance', AttendanceController::class);

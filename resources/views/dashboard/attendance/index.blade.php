@@ -470,7 +470,224 @@
             }
         }
     </style>
+    <style>
 
+        .container {
+            text-align: center;
+        }
+
+        .upload-btn {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        .upload-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: white;
+            margin: 5% auto;
+            padding: 0;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            background: linear-gradient(45deg, #007bff, #0056b3);
+            color: white;
+            padding: 20px;
+            position: relative;
+        }
+
+        .modal-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 0;
+        }
+
+        .close {
+            position: absolute;
+            top: 15px;
+            left: 20px;
+            color: white;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .close:hover {
+            color: #ccc;
+        }
+
+        .modal-body {
+            padding: 30px;
+        }
+
+        .upload-area {
+            border: 3px dashed #007bff;
+            border-radius: 10px;
+            padding: 40px 20px;
+            text-align: center;
+            background: #f8f9fa;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+
+        .upload-area:hover {
+            border-color: #0056b3;
+            background: #e3f2fd;
+        }
+
+        .upload-area.dragover {
+            border-color: #28a745;
+            background: #d4edda;
+        }
+
+        .upload-icon {
+            font-size: 48px;
+            color: #007bff;
+            margin-bottom: 15px;
+        }
+
+        .upload-text {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .upload-subtext {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .file-info {
+            display: none;
+            background: #e8f5e8;
+            border: 1px solid #28a745;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+
+        .file-name {
+            font-weight: bold;
+            color: #155724;
+            margin-bottom: 5px;
+        }
+
+        .file-size {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .upload-submit-btn {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .upload-submit-btn:hover {
+            background: linear-gradient(45deg, #218838, #1e7e34);
+        }
+
+        .upload-submit-btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #e9ecef;
+            border-radius: 3px;
+            margin: 15px 0;
+            overflow: hidden;
+            display: none;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(45deg, #28a745, #20c997);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .success-message {
+            display: none;
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            text-align: center;
+        }
+
+        .error-message {
+            display: none;
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            text-align: center;
+        }
+    </style>
     <div class="container">
         <!-- Header -->
         <div class="header">
@@ -484,14 +701,14 @@
                     <i class="fas fa-users"></i>
                 </div>
                 <div class="stat-title">إجمالي المستخدمين</div>
-                <div class="stat-value" >{{ $stats['total_users'] ??null}}</div>
+                <div class="stat-value">{{ $stats['total_users'] ??null}}</div>
             </div>
             <div class="stat-card checkin">
                 <div class="stat-icon">
                     <i class="fas fa-sign-in-alt"></i>
                 </div>
                 <div class="stat-title">تسجيل دخول اليوم</div>
-                <div class="stat-value" >{{$stats['total_checkin']??null}}</div>
+                <div class="stat-value">{{$stats['total_checkin']??null}}</div>
             </div>
             <div class="stat-card checkout">
                 <div class="stat-icon">
@@ -506,6 +723,54 @@
                 </div>
                 <div class="stat-title">لم يسجل دخول</div>
                 <div class="stat-value">{{$stats['total_absent']??null}}</div>
+            </div>
+        </div>
+
+        <div class="container">
+            <button class="upload-btn" onclick="openModal()">📊 رفع ملف الحضور و الغياب</button>
+        </div>
+
+        <!-- Modal -->
+        <div id="uploadModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <span class="close" onclick="closeModal()">&times;</span>
+                    <h2 class="modal-title">رفع ملف إكسيل</h2>
+                </div>
+                <div class="modal-body">
+                    <form id="uploadForm" enctype="multipart/form-data">
+                        <div class="upload-area" onclick="triggerFileInput()" id="uploadArea">
+                            <div class="upload-icon">📄</div>
+                            <div class="upload-text">اضغط هنا لاختيار الملف</div>
+                            <div class="upload-subtext">أو اسحب الملف إلى هنا</div>
+                            <div class="upload-subtext">يدعم ملفات: .xlsx, .xls</div>
+                        </div>
+
+                        <input type="file" id="fileInput" class="file-input" accept=".xlsx,.xls"
+                               onchange="handleFileSelect(event)">
+
+                        <div id="fileInfo" class="file-info">
+                            <div id="fileName" class="file-name"></div>
+                            <div id="fileSize" class="file-size"></div>
+                        </div>
+
+                        <div id="progressBar" class="progress-bar">
+                            <div id="progressFill" class="progress-fill"></div>
+                        </div>
+
+                        <button type="submit" id="uploadBtn" class="upload-submit-btn">
+                            📤 رفع الملف
+                        </button>
+
+                        <div id="successMessage" class="success-message">
+                            ✅ تم رفع الملف بنجاح!
+                        </div>
+
+                        <div id="errorMessage" class="error-message">
+                            ❌ حدث خطأ أثناء رفع الملف
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
 
@@ -602,4 +867,191 @@
 @endsection
 
 @push('scripts')
+    <script>
+        let selectedFile = null;
+
+        function openModal() {
+            document.getElementById('uploadModal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('uploadModal').style.display = 'none';
+            resetForm();
+        }
+
+        function triggerFileInput() {
+            document.getElementById('fileInput').click();
+        }
+
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (file) {
+                if (isValidExcelFile(file)) {
+                    selectedFile = file;
+                    displayFileInfo(file);
+                } else {
+                    alert('يرجى اختيار ملف Excel صالح (.xlsx أو .xls)');
+                    event.target.value = '';
+                }
+            }
+        }
+
+        function isValidExcelFile(file) {
+            const validTypes = [
+                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                'application/vnd.ms-excel'
+            ];
+            const validExtensions = ['.xlsx', '.xls'];
+            const fileName = file.name.toLowerCase();
+
+            return validTypes.includes(file.type) ||
+                validExtensions.some(ext => fileName.endsWith(ext));
+        }
+
+        function displayFileInfo(file) {
+            const fileInfo = document.getElementById('fileInfo');
+            const fileName = document.getElementById('fileName');
+            const fileSize = document.getElementById('fileSize');
+            const uploadBtn = document.getElementById('uploadBtn');
+
+            fileName.textContent = file.name;
+            fileSize.textContent = formatFileSize(file.size);
+
+            fileInfo.style.display = 'block';
+            uploadBtn.style.display = 'block';
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        function resetForm() {
+            document.getElementById('uploadForm').reset();
+            document.getElementById('fileInfo').style.display = 'none';
+            document.getElementById('uploadBtn').style.display = 'none';
+            document.getElementById('progressBar').style.display = 'none';
+            document.getElementById('successMessage').style.display = 'none';
+            document.getElementById('errorMessage').style.display = 'none';
+            document.getElementById('progressFill').style.width = '0%';
+            selectedFile = null;
+        }
+
+        // Drag and Drop functionality
+        const uploadArea = document.getElementById('uploadArea');
+
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                const file = files[0];
+                if (isValidExcelFile(file)) {
+                    selectedFile = file;
+                    displayFileInfo(file);
+                    document.getElementById('fileInput').files = files;
+                } else {
+                    alert('يرجى اختيار ملف Excel صالح (.xlsx أو .xls)');
+                }
+            }
+        });
+
+        // Form submission
+        document.getElementById('uploadForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            if (!selectedFile) {
+                alert('يرجى اختيار ملف أولاً');
+                return;
+            }
+
+            const uploadBtn = document.getElementById('uploadBtn');
+            const progressBar = document.getElementById('progressBar');
+            const progressFill = document.getElementById('progressFill');
+            const successMessage = document.getElementById('successMessage');
+            const errorMessage = document.getElementById('errorMessage');
+
+            // Reset messages
+            successMessage.style.display = 'none';
+            errorMessage.style.display = 'none';
+
+            // Show progress bar and disable button
+            progressBar.style.display = 'block';
+            uploadBtn.disabled = true;
+            uploadBtn.textContent = '⏳ جاري الرفع...';
+
+            // Simulate upload progress
+            let progress = 0;
+            const progressInterval = setInterval(() => {
+                progress += Math.random() * 30;
+                if (progress > 90) progress = 90;
+                progressFill.style.width = progress + '%';
+            }, 200);
+
+            try {
+                // Create FormData
+                const formData = new FormData();
+                formData.append('excel_file', selectedFile);
+
+                // هنا يمكنك تغيير الرابط إلى Laravel route الخاص بك
+                const response = await fetch('/attendance', {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+                    }
+                });
+
+                clearInterval(progressInterval);
+                progressFill.style.width = '100%';
+
+                if (response.ok) {
+                    const result = await response.json();
+                    successMessage.style.display = 'block';
+                    successMessage.textContent = '✅ ' + (result.message || 'تم رفع الملف بنجاح!');
+
+                    // إخفاء الموديل بعد 2 ثانية
+                    setTimeout(() => {
+                        closeModal();
+                    }, 2000);
+                } else {
+                    throw new Error('فشل في رفع الملف');
+                }
+            } catch (error) {
+                clearInterval(progressInterval);
+                progressFill.style.width = '0%';
+                errorMessage.style.display = 'block';
+                errorMessage.textContent = '❌ ' + (error.message || 'حدث خطأ أثناء رفع الملف');
+            } finally {
+                uploadBtn.disabled = false;
+                uploadBtn.textContent = '📤 رفع الملف';
+                setTimeout(() => {
+                    progressBar.style.display = 'none';
+                    progressFill.style.width = '0%';
+                }, 1000);
+            }
+        });
+
+        // Close modal when clicking outside
+        window.onclick = function (event) {
+            const modal = document.getElementById('uploadModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+    </script>
 @endpush
