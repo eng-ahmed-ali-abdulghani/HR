@@ -2,12 +2,10 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Vacation;
 use App\Models\User;
 use App\Models\Type;
-use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
 class VacationSeeder extends Seeder
@@ -16,7 +14,6 @@ class VacationSeeder extends Seeder
     {
         $employees = User::all();
         $types = Type::all();
-
 
         foreach (range(1, 10) as $i) {
             $employee = $employees->random();
@@ -40,14 +37,15 @@ class VacationSeeder extends Seeder
                 'replacement_employee_id' => $replacement->id,
                 'submitted_by_id' => $submitted_by->id,
                 'notes' => 'ملاحظات للإجازة رقم ' . $i,
-                'is_leader_approved' => $leader_status,
-                'leader_approved_id' => $leader_status === 'approved' ? $employees->random()->id : null,
 
-                'is_hr_approved' => $hr_status,
-                'hr_approved_id' => $hr_status === 'approved' ? $employees->random()->id : null,
+                'leader_status' => $leader_status,
+                'leader_id' => in_array($leader_status, ['approved', 'rejected']) ? $employees->random()->id : null,
 
-                'is_ceo_approved' => $ceo_status,
-                'ceo_approved_id' => $ceo_status === 'approved' ? $employees->random()->id : null,
+                'hr_status' => $hr_status,
+                'hr_id' => in_array($hr_status, ['approved', 'rejected']) ? $employees->random()->id : null,
+
+                'ceo_status' => $ceo_status,
+                'ceo_id' => in_array($ceo_status, ['approved', 'rejected']) ? $employees->random()->id : null,
             ]);
         }
     }

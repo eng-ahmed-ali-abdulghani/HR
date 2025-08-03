@@ -16,13 +16,9 @@ class VacationService
         $allowed_vacation_days = $employee->allowed_vacation_days;
 
         // جلب الإجازات المرتبطة بالموظف من تاريخ بداية عمله
-        $vacations = Vacation::with(['type', 'replacementEmployee', 'submittedBy', 'leaderApprover', 'hrApprover', 'ceoApprover'])
-            ->where('employee_id', $employee->id)
-            ->whereDate('start_date', '>=', $start_date)
-            ->orderByDesc('start_date')
-            ->get();
+        $vacations = Vacation::where('employee_id', $employee->id)->whereDate('start_date', '>=', $start_date)->orderByDesc('start_date')->get();
         // احتساب أيام الإجازات المعتمدة فقط
-        $totalDays = $vacations->filter(fn($v) => $v->status === 'approved')->sum(function ($vac) {
+        $totalDays = $vacations->filter(fn($v) => $v->ceo_status === 'approved')->sum(function ($vac) {
             return \Carbon\Carbon::parse($vac->start_date)->diffInDays(\Carbon\Carbon::parse($vac->end_date)) + 1;
         });
 
@@ -48,7 +44,7 @@ class VacationService
 
         // احسب عدد أيام الإجازات المعتمدة منذ بداية العمل
         $usedDays = Vacation::where('employee_id', $employee->id)
-            ->where('is_ceo_approved', 'approved')
+            ->where('ceo_status', 'approved')
             ->whereDate('start_date', '>=', $start_date)
             ->get()
             ->sum(function ($vac) {

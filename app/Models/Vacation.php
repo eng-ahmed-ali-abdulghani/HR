@@ -18,12 +18,12 @@ class Vacation extends Model
         'reason',
         'submitted_by_id',
         'notes',
-        'is_leader_approved',
-        'leader_approved_id',
-        'is_hr_approved',
-        'hr_approved_id',
-        'is_ceo_approved',
-        'ceo_approved_id',
+        'leader_status',
+        'leader_id',
+        'hr_status',
+        'hr_id',
+        'ceo_status',
+        'ceo_id',
     ];
 
     /**
@@ -45,30 +45,30 @@ class Vacation extends Model
     // نوع الإجازة
     public function type()
     {
-        return $this->belongsTo(Type::class);
+        return $this->belongsTo(Type::class, 'type_id');
     }
 
-    // من قدّم الطلب
+    // من قدّم الطلب (HR أو القائد)
     public function submittedBy()
     {
         return $this->belongsTo(User::class, 'submitted_by_id');
     }
 
-    // القائد الذي وافق
-    public function leaderApprover()
+    // القائد الذي وافق أو رفض
+    public function leader()
     {
-        return $this->belongsTo(User::class, 'leader_approved_id');
+        return $this->belongsTo(User::class, 'leader_id');
     }
 
     // مسؤول الـ HR
-    public function hrApprover()
+    public function hr()
     {
-        return $this->belongsTo(User::class, 'hr_approved_id');
+        return $this->belongsTo(User::class, 'hr_id');
     }
 
     // المدير التنفيذي
-    public function ceoApprover()
+    public function ceo()
     {
-        return $this->belongsTo(User::class, 'ceo_approved_id');
+        return $this->belongsTo(User::class, 'ceo_id');
     }
 }

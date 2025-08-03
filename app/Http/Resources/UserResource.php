@@ -38,9 +38,9 @@ class UserResource extends JsonResource
             // إذا كانت هناك علاقة لصورة
             'image'        =>  $this->image->photo??null, // تأكد من علاقة image موجودة
 
-            'is_vacation_pending' => Vacation::where('employee_id', $this->id)->where('is_ceo_approved', 'pending')->exists(),
+            'is_vacation_pending' => Vacation::where('employee_id', $this->id)->where('ceo_status', 'pending')->exists(),
 
-            'is_excuse_pending' => Excuse::where('employee_id', $this->id)->where('is_ceo_approved', 'pending')->exists(),
+            'is_excuse_pending' => Excuse::where('employee_id', $this->id)->where('ceo_status', 'pending')->exists(),
 
             'token'=>$this->token??null,
         ];

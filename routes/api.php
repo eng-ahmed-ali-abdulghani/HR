@@ -1,13 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\{VacationController,
-    DeductionController,
-    ExcuseController,
-    HomeController,
-    AuthController,
-    LeaderController,
-    TypeController,AttendanceController};
+use App\Http\Controllers\Api\{VacationController, DeductionController, ExcuseController, HomeController, AuthController, LeaderController, TypeController,AttendanceController};
 
 
 Route::group(['middleware' => ["SetLang"]], function () {
@@ -33,7 +27,7 @@ Route::group(['middleware' => ["SetLang"]], function () {
         Route::resource('deductions', DeductionController::class);
 
         // Deductions
-        Route::resource('attendances', AttendanceController::class);
+        Route::resource('attendance', AttendanceController::class);
 
         //leader
         Route::controller(LeaderController::class)->prefix('leader')->group(function () {
@@ -42,6 +36,9 @@ Route::group(['middleware' => ["SetLang"]], function () {
             Route::get('accept-request-excuse/{id}', 'acceptRequestExcuse');
             Route::get('get-request-vacation/user/{id}', 'getRequestVacationForUser');
             Route::get('get-request-excuse/user/{id}', 'getRequestExcuseForUser');
+
+           // Route::post('make-deduction', 'makeDeduction');
+
         });
 
         Route::get('get-type', [TypeController::class, 'GetType']);

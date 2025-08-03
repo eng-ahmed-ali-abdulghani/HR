@@ -33,14 +33,14 @@ return new class extends Migration {
             $table->text('notes')->nullable();
 
             // الموافقات
-            $table->enum('is_leader_approved', ['pending', 'approved', 'rejected'])->default('pending'); // هل تمت الموافقة من القائد؟
-            $table->foreignId('leader_approved_id')->nullable()->constrained('users')->cascadeOnUpdate()->nullOnDelete();
+            $table->enum('leader_status', ['pending', 'approved', 'rejected'])->default('pending'); // هل تمت الموافقة من القائد؟
+            $table->foreignId('leader_id')->nullable()->constrained('users')->cascadeOnUpdate()->nullOnDelete();
 
-            $table->enum('is_hr_approved', ['pending', 'approved', 'rejected'])->default('pending'); // هل تمت الموافقة من HR؟
-            $table->foreignId('hr_approved_id')->nullable()->constrained('users')->cascadeOnUpdate()->nullOnDelete();
+            $table->enum('hr_status', ['pending', 'approved', 'rejected'])->default('pending'); // هل تمت الموافقة من HR؟
+            $table->foreignId('hr_id')->nullable()->constrained('users')->cascadeOnUpdate()->nullOnDelete();
 
-            $table->enum('is_ceo_approved', ['pending', 'approved', 'rejected'])->default('pending'); // هل تمت الموافقة من المدير التنفيذي؟
-            $table->foreignId('ceo_approved_id')->nullable()->constrained('users')->cascadeOnUpdate()->nullOnDelete();
+            $table->enum('ceo_status', ['pending', 'approved', 'rejected'])->default('pending'); // هل تمت الموافقة من المدير التنفيذي؟
+            $table->foreignId('ceo_id')->nullable()->constrained('users')->cascadeOnUpdate()->nullOnDelete();
 
             $table->timestamps();
         });

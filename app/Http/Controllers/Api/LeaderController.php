@@ -22,10 +22,10 @@ class LeaderController extends Controller
         $departments = Department::with(['employees' => function ($query) {
             $query->withCount([
                 'vacations as pending_vacations_count' => function ($q) {
-                    $q->where('status', 'pending');
+                    $q->where('ceo_status', 'pending');
                 },
                 'excuses as pending_excuses_count' => function ($q) {
-                    $q->where('status', 'pending');
+                    $q->where('ceo_status', 'pending');
                 },
             ]);
         }])->where('leader_id', Auth::id())->latest()->get();
@@ -59,13 +59,13 @@ class LeaderController extends Controller
 
     public function acceptRequestVacation($id)
     {
-        $vacation = Vacation::with('employee.department')->where('id', $id)->where('status', 'pending')->first();
+        $vacation = Vacation::with('employee.department')->where('id', $id)->where('ceo_status', 'pending')->first();
         return $this->acceptRequest($vacation);
     }
 
     public function acceptRequestExcuse($id)
     {
-        $excuse = Excuse::with('employee.department')->where('id', $id)->where('status', 'pending')->first();
+        $excuse = Excuse::with('employee.department')->where('id', $id)->where('ceo_status', 'pending')->first();
         return $this->acceptRequest($excuse);
     }
 
@@ -81,11 +81,11 @@ class LeaderController extends Controller
             return $this->setCode(403)->setMessage(__('messages.forbidden'))->send();
         }
         // تحديث الحقول المشتركة
-        $model->is_leader_approved = true;
-        $model->approved_by_id = Auth::id();
+        $model->is_leader_approved = 'approved';
+        $model->leader_approved_id = Auth::id();
         $model->save();
 
-        return $this->setCode(201)->setMessage(__('messages.success'))->send();
+        return $this->setCode(201)->setMessage(__('success'))->send();
     }
 
     public function getRequestVacationForUser($id, VacationService $vacationService)

@@ -19,9 +19,7 @@ class ExcuseService
         $now = \Carbon\Carbon::now();
 
         // اجلب الإذنات من يوم التعيين حتى الآن
-        $allExcuses = Excuse::where('employee_id', $employee->id)->whereDate('start_date', '>=', $start_date)
-            ->orderBy('start_date', 'desc')
-            ->get();
+        $allExcuses = Excuse::where('employee_id', $employee->id)->whereDate('start_date', '>=', $start_date)->orderBy('start_date', 'desc')->get();
 
         // عدد الإذنات خلال الشهر الحالي
         $monthlyExcusesCount = $allExcuses->filter(function ($excuse) use ($now) {

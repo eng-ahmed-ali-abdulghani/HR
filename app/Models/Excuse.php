@@ -18,12 +18,12 @@ class Excuse extends Model
         'reason',
         'submitted_by_id',
         'notes',
-        'is_leader_approved',
-        'leader_approved_id',
-        'is_hr_approved',
-        'hr_approved_id',
-        'is_ceo_approved',
-        'ceo_approved_id',
+        'leader_status',
+        'leader_id',
+        'hr_status',
+        'hr_id',
+        'ceo_status',
+        'ceo_id',
     ];
 
     /**
@@ -45,7 +45,7 @@ class Excuse extends Model
     // نوع العذر
     public function type()
     {
-        return $this->belongsTo(Type::class);
+        return $this->belongsTo(Type::class, 'type_id');
     }
 
     // مقدم الطلب (HR أو قائد)
@@ -55,20 +55,20 @@ class Excuse extends Model
     }
 
     // القائد الذي وافق أو رفض
-    public function leaderApprover()
+    public function leader()
     {
-        return $this->belongsTo(User::class, 'leader_approved_id');
+        return $this->belongsTo(User::class, 'leader_id');
     }
 
     // مسؤول الموارد البشرية
-    public function hrApprover()
+    public function hr()
     {
-        return $this->belongsTo(User::class, 'hr_approved_id');
+        return $this->belongsTo(User::class, 'hr_id');
     }
 
     // المدير التنفيذي
-    public function ceoApprover()
+    public function ceo()
     {
-        return $this->belongsTo(User::class, 'ceo_approved_id');
+        return $this->belongsTo(User::class, 'ceo_id');
     }
 }
