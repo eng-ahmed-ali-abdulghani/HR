@@ -53,7 +53,7 @@ Route::group(['middleware' => ["SetLang"]], function () {
             Route::post('make-deduction', 'makeDeduction');
         });
 
-        //admin
+        // CEO
         Route::controller(CeoController::class)->prefix('ceo')->group(function () {
             Route::get('accept-vacation/{id}', 'acceptVacation');
             Route::get('accept-excuse/{id}', 'acceptExcuse');

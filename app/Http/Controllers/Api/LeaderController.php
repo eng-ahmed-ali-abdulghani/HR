@@ -6,9 +6,9 @@ use App\Helpers\ApiResponseHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\DeductionRequest;
 use App\Http\Resources\UserResource;
-use App\Models\Deduction;
 use App\Models\Department;
 use App\Models\User;
+use App\Services\DeductionService;
 use App\Services\ExcuseService;
 use App\Services\VacationService;
 use Illuminate\Support\Facades\Auth;
@@ -29,17 +29,14 @@ class LeaderController extends Controller
                 },
             ]);
         }])->where('leader_id', Auth::id())->latest()->get();
-
         // تجميع الموظفين من كل الأقسام
         $employees = $departments->flatMap(function ($dept) {
             return $dept->employees;
         });
-
         // ترتيب الموظفين حسب مجموع الطلبات المعلقة (إجازة + إذن)
         $sortedEmployees = $employees->sortByDesc(function ($employee) {
             return $employee->pending_vacations_count + $employee->pending_excuses_count;
         })->values(); // إعادة الفهرسة
-
         // حساب الإجماليات
         $totalVacations = $employees->sum('pending_vacations_count');
         $totalExcuses = $employees->sum('pending_excuses_count');
@@ -93,15 +90,9 @@ class LeaderController extends Controller
         return User::where('id', $id)->first();
     }
 
-    public function makeDeduction(DeductionRequest $request)
+    public function makeDeduction(DeductionRequest $request, DeductionService $deductionService)
     {
-        $data = $request->validated();
-        Deduction::create([
-            'deduction_days' => $data['deduction_days'], 'employee_id' => $data['employee_id'],
-            'type_id' => $data['type_id'], 'reason' => $data['reason'],
-            'notes' => $data['notes'], 'submitted_by_id' => Auth::id(),
-            'leader_status' => 'approved', 'leader_id' => Auth::id(),
-        ]);
-        return $this->setCode(200)->setMessage('تم اضافة الخصم بنجاح ')->send();
+        $data = $deductionService->makeDeduction($request->validated());
+        return $this->setCode($data['code'])->setMessage($data['message'])->send();
     }
 }

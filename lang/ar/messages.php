@@ -39,6 +39,7 @@ return
     'vacation_limit_exceeded' => 'لقد استنفدت جميع أيام الإجازة المتاحة.',
     'vacation_requested' => 'تم تقديم طلب الإجازة بنجاح.',
     'leader_employees_fetched' => 'تم جلب الموظفين التابعين للقائد بنجاح.',
+    'deduction_created' => 'تم إضافة الخصم بنجاح',
 
     'excuse_requested' => 'تم تقديم طلب العذر بنجاح.',
 ];

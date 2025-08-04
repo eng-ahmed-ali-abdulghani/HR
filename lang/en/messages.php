@@ -29,6 +29,7 @@ return
 
     'excuse_requested' => 'Excuse request submitted successfully.',
     'leader_employees_fetched' => 'Leader’s employees fetched successfully.',
+    'deduction_created' => 'Deduction created successfully',
 
 
     'request_approved' => 'The request has been approved.',
