@@ -3,10 +3,13 @@
 namespace App\Services;
 
 use App\Models\Deduction;
+use App\Traits\CheckRole;
 use Illuminate\Support\Facades\Auth;
 
 class DeductionService
 {
+    use  CheckRole;
+
     public function makeDeduction($data)
     {
         $authUser = Auth::user();
@@ -16,19 +19,7 @@ class DeductionService
             'reason' => $data['reason'], 'notes' => $data['notes'],
             'submitted_by_id' => $authUser->id,
         ]);
-        $role = strtolower(optional(optional($authUser->department)->translations()->where('locale', 'en')->first())->name);
-
-        if ($role === 'ceo') {
-            $deduction->ceo_status = 'approved';
-            $deduction->ceo_id = $authUser->id;
-        } elseif ($role === 'hr') {
-            $deduction->hr_status = 'approved';
-            $deduction->hr_id = $authUser->id;
-        } else {
-            $deduction->leader_status = 'approved';
-            $deduction->leader_id = $authUser->id;
-        }
-        $deduction->save();
+        $this->approveByUserRole($deduction, $authUser);
         return [
             'code' => 200,
             'message' => __('messages.deduction_created'),

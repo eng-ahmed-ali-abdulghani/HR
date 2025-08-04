@@ -5,12 +5,10 @@ namespace App\Http\Controllers\Api;
 use App\Helpers\ApiResponseHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\DeductionRequest;
-use App\Models\Deduction;
 use App\Models\User;
 use App\Services\DeductionService;
 use App\Services\ExcuseService;
 use App\Services\VacationService;
-use Illuminate\Support\Facades\Auth;
 
 class CeoController extends Controller
 {

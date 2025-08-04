@@ -4,11 +4,14 @@ namespace App\Services;
 
 use App\Models\Excuse;
 use App\Http\Resources\ExcuseResource;
+use App\Traits\CheckRole;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 class ExcuseService
 {
+    use  CheckRole;
+
     public function getExcuseForEmployee($employee)
     {
         $startDate = Carbon::parse($employee->start_date);
@@ -87,16 +90,7 @@ class ExcuseService
         if (is_array($excuse)) return $excuse;
 
         $authUser = Auth::user();
-        $role = strtolower(optional(optional($authUser->department)->translations()->where('locale', 'en')->first())->name);
-
-        match ($role) {
-            'ceo' => $this->approve($excuse, 'ceo'),
-            'hr' => $this->approve($excuse, 'hr'),
-            default => $this->approve($excuse, 'leader'),
-        };
-
-        $excuse->save();
-
+        $this->approveByUserRole($excuse, $authUser);
         return [
             'code' => 201,
             'message' => __('messages.request_approved'),

@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Traits\CheckRole;
 use Carbon\Carbon;
 use App\Models\Vacation;
 use App\Http\Resources\VacationResource;
@@ -9,6 +10,8 @@ use Illuminate\Support\Facades\Auth;
 
 class VacationService
 {
+    use  CheckRole;
+
     public function getVactionForEmployee($employee)
     {
         $startDate = Carbon::parse($employee->start_date);
@@ -82,16 +85,7 @@ class VacationService
             return $vacation;
         }
         $authUser = Auth::user();
-        $role = strtolower(optional(optional($authUser->department)->translations()->where('locale', 'en')->first())->name);
-
-        match ($role) {
-            'ceo' => $this->approve($vacation, 'ceo'),
-            'hr' => $this->approve($vacation, 'hr'),
-            default => $this->approve($vacation, 'leader'),
-        };
-
-        $vacation->save();
-
+        $this->approveByUserRole($vacation, $authUser);
         return $this->response(201, __('messages.request_approved'));
     }
 
