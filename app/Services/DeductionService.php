@@ -19,7 +19,7 @@ class DeductionService
             'reason' => $data['reason'], 'notes' => $data['notes'],
             'submitted_by_id' => $authUser->id,
         ]);
-        $this->approveByUserRole($deduction, $authUser);
+        $this->handleApprovalByUserRole($deduction, $authUser, 'approved');
         return [
             'code' => 200,
             'message' => __('messages.deduction_created'),

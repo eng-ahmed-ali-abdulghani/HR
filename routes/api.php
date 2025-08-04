@@ -61,7 +61,7 @@ Route::group(['middleware' => ["SetLang"]], function () {
 
         // CEO
         Route::controller(CeoController::class)->prefix('ceo')->group(function () {
-            
+
             Route::post('change-status-vacation', 'changeStatusVacation');
             Route::post('change-status-excuse', 'changeStatusExcuse');
 
