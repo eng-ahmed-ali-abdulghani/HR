@@ -17,7 +17,7 @@ class LeaderController extends Controller
 {
     use ApiResponseHelper;
 
-    public function getLeaderEmployees()
+    public function getEmployees()
     {
         $departments = Department::with(['employees' => function ($query) {
             $query->withCount([
@@ -56,21 +56,19 @@ class LeaderController extends Controller
 
     }
 
-    public function acceptRequestVacation($id, VacationService $vacationService)
+    public function acceptVacation($id, VacationService $vacationService)
     {
         $data = $vacationService->acceptVacation($id);
         return $this->setCode($data['code'])->setMessage($data['message'])->send();
     }
 
-
-    public function acceptRequestExcuse($id, ExcuseService $excuseService)
+    public function acceptExcuse($id, ExcuseService $excuseService)
     {
         $data = $excuseService->acceptExcuse($id);
         return $this->setCode($data['code'])->setMessage($data['message'])->send();
     }
 
-
-    public function getRequestVacationForUser($id, VacationService $vacationService)
+    public function getVacationForUser($id, VacationService $vacationService)
     {
         $employee = $this->checkExistEmployee($id);
         if (!$employee) {
@@ -80,7 +78,7 @@ class LeaderController extends Controller
         return $this->setCode(200)->setMessage('Success')->setData($vacations)->send();
     }
 
-    public function getRequestExcuseForUser($id, ExcuseService $excuseService)
+    public function getExcuseForUser($id, ExcuseService $excuseService)
     {
         $employee = $this->checkExistEmployee($id);
         if (!$employee) {

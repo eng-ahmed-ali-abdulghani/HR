@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Helpers\ApiResponseHelper;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
 use App\Models\{Vacation, Deduction};
 use Carbon\Carbon;
 use App\Models\Excuse;
@@ -58,6 +59,15 @@ class HomeController extends Controller
         /**
          * التجهيز للإرسال
          */
+
+        $attendance = DB::table('attendances')
+            ->selectRaw('MIN(CASE WHEN type = "checkin" THEN timestamp END) as checkin_time')
+            ->selectRaw('MAX(CASE WHEN type = "checkout" THEN timestamp END) as checkout_time')
+            ->whereDate('timestamp', Carbon::today()->toDateString())
+            ->where('employee_id', $employee->id)
+            ->first();
+
+
         return $this->setCode(200)->setMessage('Success')->setData([
 
             'from_date' => $start_date->toDateString(),
@@ -71,6 +81,11 @@ class HomeController extends Controller
 
             'monthly_deductions_count' => $monthlyDeductionsCount,
             'total_deductions_count' => $deductions->count(),
+
+            'date' => Carbon::today()->toDateString(),
+            'checkin_time' => $attendance->checkin_time ? Carbon::parse($attendance->checkin_time)->format('H:i') : null,
+            'checkout_time' => $attendance->checkout_time ? Carbon::parse($attendance->checkout_time)->format('H:i') : null,
+
         ])->send();
     }
 

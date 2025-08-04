@@ -21,7 +21,7 @@ Route::group(['middleware' => ["SetLang"]], function () {
     Route::group(['middleware' => ["auth:sanctum"]], function () {
         // Auth
         Route::post('user/update', [AuthController::class, 'update']);
-        Route::post('user/profile', [AuthController::class, 'profile']);
+        Route::get('user/profile', [AuthController::class, 'profile']);
         Route::get('user/logout', [AuthController::class, 'logout']);
         Route::get('get-users', [AuthController::class, 'getUsers']);
 
@@ -45,20 +45,20 @@ Route::group(['middleware' => ["SetLang"]], function () {
 
         //leader
         Route::controller(LeaderController::class)->prefix('leader')->group(function () {
-            Route::get('get-employees', 'getLeaderEmployees');
-            Route::get('accept-request-vacation/{id}', 'acceptRequestVacation');
-            Route::get('accept-request-excuse/{id}', 'acceptRequestExcuse');
-            Route::get('get-request-vacation/user/{id}', 'getRequestVacationForUser');
-            Route::get('get-request-excuse/user/{id}', 'getRequestExcuseForUser');
+            Route::get('get-employees', 'getEmployees');
+            Route::get('accept-vacation/{id}', 'acceptVacation');
+            Route::get('accept-excuse/{id}', 'acceptExcuse');
+            Route::get('get-vacation/user/{id}', 'getVacationForUser');
+            Route::get('get-excuse/user/{id}', 'getExcuseForUser');
             Route::post('make-deduction', 'makeDeduction');
         });
 
         //admin
         Route::controller(CeoController::class)->prefix('ceo')->group(function () {
-            Route::get('accept-request-vacation/{id}', 'acceptRequestVacation');
-            Route::get('accept-request-excuse/{id}', 'acceptRequestExcuse');
-            Route::get('get-request-vacation/user/{id}', 'getRequestVacationForUser');
-            Route::get('get-request-excuse/user/{id}', 'getRequestExcuseForUser');
+            Route::get('accept-vacation/{id}', 'acceptVacation');
+            Route::get('accept-excuse/{id}', 'acceptExcuse');
+            Route::get('get-vacation/user/{id}', 'getVacationForUser');
+            Route::get('get-excuse/user/{id}', 'getExcuseForUser');
             Route::post('make-deduction', 'makeDeduction');
         });
     });
