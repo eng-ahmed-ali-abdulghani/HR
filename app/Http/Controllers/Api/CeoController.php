@@ -15,14 +15,14 @@ class CeoController extends Controller
 {
     use ApiResponseHelper;
 
-    public function acceptRequestVacation($id ,VacationService $vacationService)
+    public function acceptRequestVacation($id, VacationService $vacationService)
     {
         $data = $vacationService->acceptVacation($id);
         return $this->setCode($data['code'])->setMessage($data['message'])->send();
     }
 
 
-    public function acceptRequestExcuse($id ,ExcuseService $excuseService)
+    public function acceptRequestExcuse($id, ExcuseService $excuseService)
     {
         $data = $excuseService->acceptExcuse($id);
         return $this->setCode($data['code'])->setMessage($data['message'])->send();

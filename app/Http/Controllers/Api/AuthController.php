@@ -28,6 +28,11 @@ class AuthController extends Controller
         return $this->setCode(200)->setMessage('User Logeed in Successfully')->setData(new UserResource($user))->send();
     }
 
+    public function profile()
+    {
+        return $this->setCode(200)->setMessage('User   Successfully')->setData(new UserResource(Auth::user()))->send();
+    }
+
     public function update(UpdateUserRequest $request, UserService $userService)
     {
         try {

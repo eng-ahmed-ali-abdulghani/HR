@@ -38,6 +38,7 @@ return
     'request_cancelled' => 'تم إلغاء الطلب.',
     'vacation_limit_exceeded' => 'لقد استنفدت جميع أيام الإجازة المتاحة.',
     'vacation_requested' => 'تم تقديم طلب الإجازة بنجاح.',
+    'leader_employees_fetched' => 'تم جلب الموظفين التابعين للقائد بنجاح.',
 
     'excuse_requested' => 'تم تقديم طلب العذر بنجاح.',
 ];

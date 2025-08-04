@@ -28,6 +28,7 @@ return
     'vacation_booked' =>'This date is already booked for you.',
 
     'excuse_requested' => 'Excuse request submitted successfully.',
+    'leader_employees_fetched' => 'Leader’s employees fetched successfully.',
 
 
     'request_approved' => 'The request has been approved.',

@@ -81,7 +81,6 @@ class VacationService
         if (is_array($vacation)) {
             return $vacation;
         }
-
         $authUser = Auth::user();
         $role = strtolower(optional(optional($authUser->department)->translations()->where('locale', 'en')->first())->name);
 
@@ -106,9 +105,7 @@ class VacationService
 
     private function vacationExists($employeeId, $startDate)
     {
-        return Vacation::where('employee_id', $employeeId)
-            ->whereDate('start_date', $startDate)
-            ->exists();
+        return Vacation::where('employee_id', $employeeId)->whereDate('start_date', $startDate)->exists();
     }
 
     private function calculateUsedDays($vacations)

@@ -21,6 +21,7 @@ Route::group(['middleware' => ["SetLang"]], function () {
     Route::group(['middleware' => ["auth:sanctum"]], function () {
         // Auth
         Route::post('user/update', [AuthController::class, 'update']);
+        Route::post('user/profile', [AuthController::class, 'profile']);
         Route::get('user/logout', [AuthController::class, 'logout']);
         Route::get('get-users', [AuthController::class, 'getUsers']);
 

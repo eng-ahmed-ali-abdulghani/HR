@@ -46,13 +46,13 @@ class LeaderController extends Controller
         $totalRequests = $totalVacations + $totalExcuses;
 
         $data = [
-            'employees' => UserResource::collection($sortedEmployees),
             'total_employees' => $employees->count(),
             'total_pending_vacations' => $totalVacations,
             'total_pending_excuses' => $totalExcuses,
             'total_pending_requests' => $totalRequests,
+            'employees' => UserResource::collection($sortedEmployees),
         ];
-        return $this->setCode(201)->setMessage(__('Success'))->setData($data)->send();
+        return $this->setCode(201)->setMessage(__('messages.leader_employees_fetched'))->setData($data)->send();
 
     }
 
