@@ -28,8 +28,7 @@ class VacationController extends Controller
 
     public function store(StoreVacationRequest $request)
     {
-        $employee = Auth::user();
-        $data = $this->vacationService->makeVacation($request->validated(), $employee);
+        $data = $this->vacationService->makeVacation($request->validated());
         return $this->setCode($data['code'])->setMessage($data['message'])->setData($data['data'])->send();
     }
 

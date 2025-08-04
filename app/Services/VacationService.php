@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\User;
 use App\Traits\CheckRole;
 use Carbon\Carbon;
 use App\Models\Vacation;
@@ -31,15 +32,16 @@ class VacationService
         ];
     }
 
-    public function makeVacation($data, $employee)
+    public function makeVacation($data)
     {
+        $employee = User::find($data['employee_id']);
+
         $startDate = Carbon::parse($employee->start_date);
         $allowedDays = $employee->allowed_vacation_days;
 
         if ($this->vacationExists($employee->id, $data['start_date'])) {
             return $this->response(409, __('messages.vacation_booked'));
         }
-
         $approvedVacations = Vacation::where('employee_id', $employee->id)->where('ceo_status', 'approved')->whereDate('start_date', '>=', $startDate)->get();
 
         $usedDays = $this->calculateUsedDays($approvedVacations);

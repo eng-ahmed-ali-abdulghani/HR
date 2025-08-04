@@ -30,8 +30,7 @@ class ExcuseController extends Controller
 
     public function store(StoreExcuseRequest $request)
     {
-        $employee = Auth::user();
-        $data = $this->excuseService->makeExcuse($request->validated(), $employee);
+        $data = $this->excuseService->makeExcuse($request->validated());
         return $this->setCode($data['code'])->setMessage($data['message'])->setData($data['data'])->send();
     }
 

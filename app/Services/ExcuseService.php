@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Excuse;
 use App\Http\Resources\ExcuseResource;
+use App\Models\User;
 use App\Traits\CheckRole;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -31,8 +32,10 @@ class ExcuseService
         ];
     }
 
-    public function makeExcuse($data, $employee)
+    public function makeExcuse($data)
     {
+        $employee = User::find($data['employee_id']);
+
         $excuseExists = Excuse::where('employee_id', $employee->id)
             ->where('start_date', $data['start_date'])
             ->exists();

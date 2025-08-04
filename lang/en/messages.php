@@ -30,6 +30,7 @@ return
     'excuse_requested' => 'Excuse request submitted successfully.',
     'leader_employees_fetched' => 'Leader’s employees fetched successfully.',
     'deduction_created' => 'Deduction created successfully',
+    'unauthorized_action' => 'You are not authorized to perform this action.',
 
 
     'request_approved' => 'The request has been approved.',

@@ -40,6 +40,7 @@ return
     'vacation_requested' => 'تم تقديم طلب الإجازة بنجاح.',
     'leader_employees_fetched' => 'تم جلب الموظفين التابعين للقائد بنجاح.',
     'deduction_created' => 'تم إضافة الخصم بنجاح',
+    'unauthorized_action' => 'ليس لديك صلاحية لتنفيذ هذا الإجراء.',
 
     'excuse_requested' => 'تم تقديم طلب العذر بنجاح.',
 ];
