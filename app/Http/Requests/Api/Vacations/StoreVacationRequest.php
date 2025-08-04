@@ -13,15 +13,12 @@ class StoreVacationRequest extends FormRequest
     public function authorize(): bool
     {
         $user = Auth::user();
-
         // الموظف اللي داخل الطلب
         $requestedEmployeeId = $this->input('employee_id');
-
         // لو هو نفسه الموظف اللي بيطلب
         if ($user->id === $requestedEmployeeId) {
             return true;
         }
-
         // لو عنده صلاحيات HR أو CEO مثلاً
         $roleName = optional($user->department?->translations()->where('locale', 'en')->first())->name;
         $role = strtolower($roleName);
