@@ -20,12 +20,10 @@ class AttendanceController extends Controller
             return response()->json(['message' => 'الموظف غير موجود'], 404);
         }
 
-        $attendances = DB::table('attendances')
-            ->selectRaw('DATE(timestamp) as date')
+        $attendances = DB::table('attendances')->selectRaw('DATE(timestamp) as date')
             ->selectRaw('MIN(CASE WHEN type = "checkin" THEN timestamp END) as checkin_time')
             ->selectRaw('MAX(CASE WHEN type = "checkout" THEN timestamp END) as checkout_time')
-            ->where('employee_id', $id)
-            ->groupBy(DB::raw('DATE(timestamp)'))
+            ->where('employee_id', $id)->groupBy(DB::raw('DATE(timestamp)'))
             ->orderBy('date', 'desc')
             ->get()
             ->map(function ($row) {

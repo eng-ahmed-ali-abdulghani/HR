@@ -34,6 +34,10 @@ return
     'not_found' => 'هذا الطلب غير موجود ',
     'vacation_booked' =>'لقد تم ارسال هذا الطلب من قبل ',
 
+    'request_approved' => 'تمت الموافقة على الطلب.',
+    'request_cancelled' => 'تم إلغاء الطلب.',
+    'vacation_limit_exceeded' => 'لقد استنفدت جميع أيام الإجازة المتاحة.',
+    'vacation_requested' => 'تم تقديم طلب الإجازة بنجاح.',
 
-
+    'excuse_requested' => 'تم تقديم طلب العذر بنجاح.',
 ];

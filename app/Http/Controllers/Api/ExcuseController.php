@@ -30,34 +30,14 @@ class ExcuseController extends Controller
 
     public function store(StoreExcuseRequest $request)
     {
-        $data = $request->validated();
-        $excuseExists = Excuse::where('employee_id', Auth::id())->where('start_date',$data['start_date'])->exists();
-
-        if ($excuseExists) {
-            return $this->setCode(409)->setMessage(__('messages.vacation_booked'))->send();
-        }
-        // حفظ الإجازة باستخدام الخدمة
-        $vacation = $this->excuseService->store($data);
-
-        return $this->setCode(201)->setMessage(__('Success'))->setData($vacation)->send();
+        $employee = Auth::user();
+        $data = $this->excuseService->makeExcuse($request->validated(), $employee);
+        return $this->setCode($data['code'])->setMessage($data['message'])->setData($data['data'])->send();
     }
 
     public function destroy($id)
     {
-        $user_id = auth()->user()->id;
-
-        $excuse = Excuse::where('employee_id', $user_id)->where('id', $id)->first();
-
-        if (!$excuse) {
-            return $this->setCode(404)->setMessage(__('messages.not_found'))->send();
-        }
-
-        if ($excuse->status === 'approved') {
-            return $this->setCode(403)->setMessage(__('messages.forbiden'))->send();
-        }
-
-        $this->excuseService->destroy($id);
-
-        return $this->setCode(200)->setMessage('تم الغاء طلب الاذن ')->send();
+        $data = $this->excuseService->cancelledExcuse($id);
+        return $this->setCode($data['code'])->setMessage($data['message'])->setData($data['data'])->send();
     }
 }

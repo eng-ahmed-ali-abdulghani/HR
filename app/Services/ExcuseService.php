@@ -3,47 +3,45 @@
 namespace App\Services;
 
 use App\Models\Excuse;
-use App\Helpers\ApiResponseHelper;
 use App\Http\Resources\ExcuseResource;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 class ExcuseService
 {
-
-    use ApiResponseHelper;
-
     public function getExcuseForEmployee($employee)
     {
-        $start_date = \Carbon\Carbon::parse($employee->start_date);
-        $now = \Carbon\Carbon::now();
+        $startDate = Carbon::parse($employee->start_date);
+        $now = Carbon::now();
 
-        // اجلب الإذنات من يوم التعيين حتى الآن
-        $allExcuses = Excuse::where('employee_id', $employee->id)->whereDate('start_date', '>=', $start_date)->orderBy('start_date', 'desc')->get();
+        $allExcuses = Excuse::where('employee_id', $employee->id)->whereDate('start_date', '>=', $startDate)->orderByDesc('start_date')->get();
 
-        // عدد الإذنات خلال الشهر الحالي
-        $monthlyExcusesCount = $allExcuses->filter(function ($excuse) use ($now) {
-            return $excuse->start_date instanceof \Carbon\Carbon &&
-                $excuse->start_date->month === $now->month &&
-                $excuse->start_date->year === $now->year;
-        })->count();
-
-        // إجمالي عدد الإذنات
-        $totalExcusesCount = $allExcuses->count();
+        $monthlyExcusesCount = $allExcuses->filter(fn($excuse) => $excuse->start_date instanceof Carbon &&
+            $excuse->start_date->isSameMonth($now)
+        )->count();
 
         return [
-            'from_date' => $start_date->toDateString(),
+            'from_date' => $startDate->toDateString(),
             'monthly_excuses_count' => $monthlyExcusesCount,
-            'total_excuses_count' => $totalExcusesCount,
+            'total_excuses_count' => $allExcuses->count(),
             'excuses' => ExcuseResource::collection($allExcuses),
         ];
     }
 
-
-    public function store($data)
+    public function makeExcuse($data, $employee)
     {
-        $employee = Auth::user();
-        // يمكن إضافة تحقق من وجود بيانات مطلوبة هنا أو استخدام FormRequest
+        $excuseExists = Excuse::where('employee_id', $employee->id)
+            ->where('start_date', $data['start_date'])
+            ->exists();
+
+        if ($excuseExists) {
+            return [
+                'code' => 409,
+                'message' => __('messages.vacation_booked'),
+                'data' => null
+            ];
+        }
+
         Excuse::create([
             'start_date' => $data['start_date'],
             'end_date' => $data['end_date'],
@@ -51,17 +49,76 @@ class ExcuseService
             'reason' => $data['reason'] ?? null,
             'type_id' => $data['type_id'],
             'replacement_employee_id' => $data['replacement_employee_id'] ?? null,
-            'submitted_by_id' => $employee->id,
+            'submitted_by_id' => Auth::id(),
             'employee_id' => $employee->id,
         ]);
-        return 'تم تقديم طلب العذر بنجاح.';
+
+        return [
+            'code' => 201,
+            'message' => __('messages.excuse_requested'),
+            'data' => null
+        ];
     }
 
-
-    public function destroy($id)
+    public function cancelledExcuse($id)
     {
-        $vacation = Excuse::find($id);
-        $vacation->delete();
+        $excuse = $this->checkExcuse($id);
+        if (is_array($excuse)) return $excuse;
+
+        if ($excuse->ceo_status === 'approved') {
+            return [
+                'code' => 403,
+                'message' => __('messages.forbiden'),
+                'data' => null
+            ];
+        }
+
+        $excuse->delete();
+        return [
+            'code' => 200,
+            'message' => __('messages.request_cancelled'),
+            'data' => null
+        ];
     }
 
+    public function acceptExcuse($id)
+    {
+        $excuse = $this->checkExcuse($id);
+        if (is_array($excuse)) return $excuse;
+
+        $authUser = Auth::user();
+        $role = strtolower(optional(optional($authUser->department)->translations()->where('locale', 'en')->first())->name);
+
+        match ($role) {
+            'ceo' => $this->approve($excuse, 'ceo'),
+            'hr' => $this->approve($excuse, 'hr'),
+            default => $this->approve($excuse, 'leader'),
+        };
+
+        $excuse->save();
+
+        return [
+            'code' => 201,
+            'message' => __('messages.request_approved'),
+            'data' => null
+        ];
+    }
+
+    // ===== Helpers =====
+
+    private function checkExcuse($id)
+    {
+        $excuse = Excuse::with('employee.department')->find($id);
+        return $excuse ?: [
+            'code' => 404,
+            'message' => __('messages.not_found'),
+            'data' => null
+        ];
+    }
+
+    private function approve(Excuse $excuse, string $role)
+    {
+        $excuse["{$role}_status"] = 'approved';
+        $excuse["{$role}_id"] = Auth::id();
+    }
 }

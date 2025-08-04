@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Models\Vacation;
 use App\Services\VacationService;
 use App\Helpers\ApiResponseHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\Vacations\StoreVacationRequest;
+use Illuminate\Support\Facades\Auth;
 
 class VacationController extends Controller
 {
@@ -28,36 +28,15 @@ class VacationController extends Controller
 
     public function store(StoreVacationRequest $request)
     {
-        // التحقق من وجود إجازة بنفس التاريخ لنفس المستخدم
-        $vacationExists = Vacation::whereDate('start_date', $request->start_date)->where('employee_id', $request->user()->id)->exists();
-
-        if ($vacationExists) {
-            return $this->setCode(409)->setMessage(__('messages.vacation_booked'))->send();
-        }
-        // حفظ الإجازة باستخدام الخدمة
-        $data = $this->vacationService->store($request->validated());
-
+        $employee = Auth::user();
+        $data = $this->vacationService->makeVacation($request->validated(), $employee);
         return $this->setCode($data['code'])->setMessage($data['message'])->setData($data['data'])->send();
     }
 
-
     public function destroy($id)
     {
-        $user_id = auth()->user()->id;
-
-        $vacation = Vacation::where('employee_id', $user_id)->where('id', $id)->first();
-
-        if (!$vacation) {
-            return $this->setCode(404)->setMessage(__('messages.not_found'))->send();
-        }
-
-        if ($vacation->status === 'approved') {
-            return $this->setCode(403)->setMessage(__('messages.forbiden'))->send();
-        }
-
-        $this->vacationService->destroy($id);
-
-        return $this->setCode(200)->setMessage(__('messages.cancel_vacation'))->send();
+        $data = $this->vacationService->cancelledVacation($id);
+        return $this->setCode($data['code'])->setMessage($data['message'])->setData($data['data'])->send();
     }
 
 }

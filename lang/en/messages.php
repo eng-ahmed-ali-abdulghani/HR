@@ -27,9 +27,13 @@ return
     'not_found' => 'The Request could not be found',
     'vacation_booked' =>'This date is already booked for you.',
 
+    'excuse_requested' => 'Excuse request submitted successfully.',
 
 
-
+    'request_approved' => 'The request has been approved.',
+    'request_cancelled' => 'The request has been cancelled.',
+    'vacation_limit_exceeded' => 'You have used all of your available vacation days.',
+    'vacation_requested' => 'Vacation request submitted successfully.',
 
 
 

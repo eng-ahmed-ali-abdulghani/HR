@@ -36,7 +36,6 @@ return new class extends Migration
             $table->boolean('is_automatic')->default(false);
 
             // الموافقات
-            // الموافقات
             $table->enum('leader_status', ['pending', 'approved', 'rejected'])->default('pending'); // هل تمت الموافقة من القائد؟
             $table->foreignId('leader_id')->nullable()->constrained('users')->cascadeOnUpdate()->nullOnDelete();
 

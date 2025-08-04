@@ -1,7 +1,16 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\{VacationController, DeductionController, ExcuseController, HomeController, AuthController, LeaderController, TypeController,AttendanceController};
+use App\Http\Controllers\Api\{VacationController,
+    DeductionController,
+    ExcuseController,
+    HomeController,
+    AuthController,
+    LeaderController,
+    TypeController,
+    AttendanceController,
+    CeoController
+};
 
 
 Route::group(['middleware' => ["SetLang"]], function () {
@@ -13,9 +22,13 @@ Route::group(['middleware' => ["SetLang"]], function () {
         // Auth
         Route::post('user/update', [AuthController::class, 'update']);
         Route::get('user/logout', [AuthController::class, 'logout']);
+        Route::get('get-users', [AuthController::class, 'getUsers']);
 
         //Home
         Route::get('home', [HomeController::class, 'home']);
+
+        // Type
+        Route::get('get-type', [TypeController::class, 'GetType']);
 
         // Vacations
         Route::resource('vacation', VacationController::class);
@@ -36,13 +49,17 @@ Route::group(['middleware' => ["SetLang"]], function () {
             Route::get('accept-request-excuse/{id}', 'acceptRequestExcuse');
             Route::get('get-request-vacation/user/{id}', 'getRequestVacationForUser');
             Route::get('get-request-excuse/user/{id}', 'getRequestExcuseForUser');
-
-           // Route::post('make-deduction', 'makeDeduction');
-
+            Route::post('make-deduction', 'makeDeduction');
         });
 
-        Route::get('get-type', [TypeController::class, 'GetType']);
-
+        //admin
+        Route::controller(CeoController::class)->prefix('ceo')->group(function () {
+            Route::get('accept-request-vacation/{id}', 'acceptRequestVacation');
+            Route::get('accept-request-excuse/{id}', 'acceptRequestExcuse');
+            Route::get('get-request-vacation/user/{id}', 'getRequestVacationForUser');
+            Route::get('get-request-excuse/user/{id}', 'getRequestExcuseForUser');
+            Route::post('make-deduction', 'makeDeduction');
+        });
     });
 
 });

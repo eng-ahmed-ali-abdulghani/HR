@@ -24,7 +24,7 @@ class AuthController extends Controller
             return response()->json(['status' => false, 'message' => (__('auth.failed')), 'code' => 401], 401);
         }
         $user = User::where('phone', $data['phone'])->first();
-        $user['token']= $user->createToken('auth_token')->plainTextToken;
+        $user['token'] = $user->createToken('auth_token')->plainTextToken;
         return $this->setCode(200)->setMessage('User Logeed in Successfully')->setData(new UserResource($user))->send();
     }
 
@@ -43,5 +43,10 @@ class AuthController extends Controller
         $user = $request->user();
         $user->tokens()->delete();
         return $this->setCode(200)->setMessage(__('auth.logout'))->send();
+    }
+
+    public function getUsers()
+    {
+        return $this->setCode(200)->setMessage('Users Get Successfully')->setData(UserResource::collection(User::all()))->send();
     }
 }

@@ -5,70 +5,28 @@ namespace App\Http\Controllers\Api;
 use App\Helpers\ApiResponseHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\DeductionRequest;
-use App\Http\Resources\UserResource;
 use App\Models\Deduction;
-use App\Models\Department;
 use App\Models\User;
 use App\Services\ExcuseService;
 use App\Services\VacationService;
 use Illuminate\Support\Facades\Auth;
 
-class LeaderController extends Controller
+class CeoController extends Controller
 {
     use ApiResponseHelper;
 
-    public function getLeaderEmployees()
-    {
-        $departments = Department::with(['employees' => function ($query) {
-            $query->withCount([
-                'vacations as pending_vacations_count' => function ($q) {
-                    $q->where('ceo_status', 'pending');
-                },
-                'excuses as pending_excuses_count' => function ($q) {
-                    $q->where('ceo_status', 'pending');
-                },
-            ]);
-        }])->where('leader_id', Auth::id())->latest()->get();
-
-        // تجميع الموظفين من كل الأقسام
-        $employees = $departments->flatMap(function ($dept) {
-            return $dept->employees;
-        });
-
-        // ترتيب الموظفين حسب مجموع الطلبات المعلقة (إجازة + إذن)
-        $sortedEmployees = $employees->sortByDesc(function ($employee) {
-            return $employee->pending_vacations_count + $employee->pending_excuses_count;
-        })->values(); // إعادة الفهرسة
-
-        // حساب الإجماليات
-        $totalVacations = $employees->sum('pending_vacations_count');
-        $totalExcuses = $employees->sum('pending_excuses_count');
-        $totalRequests = $totalVacations + $totalExcuses;
-
-        $data = [
-            'employees' => UserResource::collection($sortedEmployees),
-            'total_employees' => $employees->count(),
-            'total_pending_vacations' => $totalVacations,
-            'total_pending_excuses' => $totalExcuses,
-            'total_pending_requests' => $totalRequests,
-        ];
-        return $this->setCode(201)->setMessage(__('Success'))->setData($data)->send();
-
-    }
-
-    public function acceptRequestVacation($id, VacationService $vacationService)
+    public function acceptRequestVacation($id ,VacationService $vacationService)
     {
         $data = $vacationService->acceptVacation($id);
         return $this->setCode($data['code'])->setMessage($data['message'])->send();
     }
 
 
-    public function acceptRequestExcuse($id, ExcuseService $excuseService)
+    public function acceptRequestExcuse($id ,ExcuseService $excuseService)
     {
         $data = $excuseService->acceptExcuse($id);
         return $this->setCode($data['code'])->setMessage($data['message'])->send();
     }
-
 
     public function getRequestVacationForUser($id, VacationService $vacationService)
     {
@@ -106,4 +64,5 @@ class LeaderController extends Controller
         ]);
         return $this->setCode(200)->setMessage('تم اضافة الخصم بنجاح ')->send();
     }
+
 }

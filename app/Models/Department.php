@@ -16,6 +16,12 @@ class Department extends Model
 
     public $timestamps = false;
 
+    public function translations()
+    {
+        return $this->hasMany(DepartmentTranslation::class);
+
+    }
+
     public function leader()
     {
         return $this->belongsTo(User::class, 'leader_id');
