@@ -13,7 +13,6 @@ class VacationService
 {
     use  CheckRole;
 
-
     public function getAllVactions()
     {
         $vacations = Vacation::orderByDesc('start_date')->get();
@@ -21,25 +20,6 @@ class VacationService
             'code' => 200,
             'message' => 'Showing all vacations because employee not found.',
             'data' => VacationResource::collection($vacations),
-        ];
-    }
-
-    public function getVactionForEmployee($employee)
-    {
-        $startDate = Carbon::parse($employee->start_date);
-        $allowedDays = $employee->allowed_vacation_days;
-
-        $vacations = Vacation::where('employee_id', $employee->id)->whereDate('start_date', '>=', $startDate)->orderByDesc('start_date')->get();
-
-        $usedDays = $this->calculateUsedDays($vacations);
-        $remainingDays = max(0, $allowedDays - $usedDays);
-
-        return [
-            'from_date' => $startDate->toDateString(),
-            'allowed_days' => $allowedDays,
-            'total_days_used' => $usedDays,
-            'remaining_days' => $remainingDays,
-            'vacations' => VacationResource::collection($vacations),
         ];
     }
 
@@ -76,6 +56,37 @@ class VacationService
         return $this->response(201, __('messages.vacation_requested'));
     }
 
+    public function getVactionForEmployee($id)
+    {
+        $employee = User::where('id', $id)->first();
+        if (!$employee) {
+            return [
+                'code' => 404,
+                'message' => __('messages.not_found'),
+                'data' => null,
+            ];
+        }
+        $startDate = Carbon::parse($employee->start_date);
+        $allowedDays = $employee->allowed_vacation_days;
+
+        $vacations = Vacation::where('employee_id', $employee->id)->whereDate('start_date', '>=', $startDate)->orderByDesc('start_date')->get();
+
+        $usedDays = $this->calculateUsedDays($vacations);
+        $remainingDays = max(0, $allowedDays - $usedDays);
+
+        return [
+            'code' => 200,
+            'message' => 'get Data',
+            'data' => [
+                'from_date' => $startDate->toDateString(),
+                'allowed_days' => $allowedDays,
+                'total_days_used' => $usedDays,
+                'remaining_days' => $remainingDays,
+                'vacations' => VacationResource::collection($vacations),
+            ],
+        ];
+    }
+
     public function cancelledVacation($id)
     {
         $vacation = $this->checkVacation($id);
@@ -89,8 +100,13 @@ class VacationService
         return $this->response(200, __('messages.request_cancelled'));
     }
 
-    public function changeStatusVacation($data, $vacation)
+    public function changeStatusVacation($data, $id)
     {
+        $vacation = $this->checkVacation($id);
+        if (is_array($vacation)) {
+            return $vacation;
+        }
+
         $authUser = Auth::user();
         $this->handleApprovalByUserRole($vacation, $authUser, $data['status']);
         return $this->response(201, __('messages.request_approved'));
@@ -117,12 +133,6 @@ class VacationService
     private function calculateVacationDays($startDate, $endDate)
     {
         return Carbon::parse($startDate)->diffInDays(Carbon::parse($endDate)) + 1;
-    }
-
-    private function approve(Vacation $vacation, string $role)
-    {
-        $vacation["{$role}_status"] = 'approved';
-        $vacation["{$role}_id"] = Auth::id();
     }
 
     private function response($code, $message, $data = null)
