@@ -1,32 +1,35 @@
 <?php
 
 namespace App\Traits;
+use Illuminate\Support\Str;
 
 
 trait CheckRole
 {
 
-    public function approveByUserRole($saveModel, $user)
+
+    public function handleApprovalByUserRole($model, $user, string $status): void
     {
-        $roleName = optional($user->department?->translations()->where('locale', 'en')->first())->name;
+        $roleName = optional($user->department?->translations()->firstWhere('locale', 'en'))->name;
 
-        $role = strtolower($roleName ?? '');
+        $roleKey = Str::lower($roleName ?? '');
 
+        // الأدوار المسموح بها فقط
         $validRoles = ['ceo', 'hr', 'leader'];
 
-        $finalRole = in_array($role, $validRoles) ? $role : 'leader';
+        $finalRole = in_array($roleKey, $validRoles) ? $roleKey : 'leader';
 
-        $this->approveRole($saveModel, $finalRole, $user->id);
+        $this->setApprovalByRole($model, $finalRole, $user->id, $status);
 
-        $saveModel->save();
+        $model->save();
     }
 
-
-    private function approveRole($model, string $role, int $userId): void
+    private function setApprovalByRole($model, string $role, int $userId, string $status): void
     {
-        $model["{$role}_status"] = 'approved';
+        $model["{$role}_status"] = $status;  // "approved" or "rejected"
         $model["{$role}_id"] = $userId;
     }
+
 
 
 }

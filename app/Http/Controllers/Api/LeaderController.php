@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Helpers\ApiResponseHelper;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ChangeStatusRequest;
 use App\Http\Requests\DeductionRequest;
 use App\Http\Resources\UserResource;
 use App\Models\Department;
@@ -53,15 +54,15 @@ class LeaderController extends Controller
 
     }
 
-    public function acceptVacation($id, VacationService $vacationService)
+    public function changeStatusVacation(ChangeStatusRequest $request, VacationService $vacationService)
     {
-        $data = $vacationService->acceptVacation($id);
+        $data = $vacationService->changeStatusVacation($request->validated());
         return $this->setCode($data['code'])->setMessage($data['message'])->send();
     }
 
-    public function acceptExcuse($id, ExcuseService $excuseService)
+    public function changeStatusExcuse(ChangeStatusRequest $request, ExcuseService $excuseService)
     {
-        $data = $excuseService->acceptExcuse($id);
+        $data = $excuseService->changeStatusExcuse($request->validated());
         return $this->setCode($data['code'])->setMessage($data['message'])->send();
     }
 

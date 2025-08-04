@@ -1,6 +1,7 @@
 <?php
 
-use App\Http\Controllers\Web\{AttendanceController, LoginController};
+use App\Http\Controllers\Web\{AttendanceController};
+use App\Http\Controllers\Web\LoginController;
 use Illuminate\Support\Facades\Route;
 
 

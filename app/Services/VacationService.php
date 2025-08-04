@@ -78,14 +78,11 @@ class VacationService
         return $this->response(200, __('messages.request_cancelled'));
     }
 
-    public function acceptVacation($id)
+    public function changeStatusVacation($data)
     {
-        $vacation = $this->checkVacation($id);
-        if (is_array($vacation)) {
-            return $vacation;
-        }
+        $vacation = $this->checkVacation($data['vacation_id']);
         $authUser = Auth::user();
-        $this->approveByUserRole($vacation, $authUser);
+        $this->handleApprovalByUserRole($vacation, $authUser, $data['status']);
         return $this->response(201, __('messages.request_approved'));
     }
 

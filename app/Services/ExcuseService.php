@@ -84,13 +84,11 @@ class ExcuseService
         ];
     }
 
-    public function acceptExcuse($id)
+    public function changeStatusExcuse($data)
     {
-        $excuse = $this->checkExcuse($id);
-        if (is_array($excuse)) return $excuse;
-
+        $excuse = $this->checkExcuse($data['excuse_id']);
         $authUser = Auth::user();
-        $this->approveByUserRole($excuse, $authUser);
+        $this->handleApprovalByUserRole($excuse, $authUser, $data['status']);
         return [
             'code' => 201,
             'message' => __('messages.request_approved'),
