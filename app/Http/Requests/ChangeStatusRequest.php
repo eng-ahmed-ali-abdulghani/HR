@@ -17,20 +17,7 @@ class ChangeStatusRequest extends FormRequest
 
     public function rules(): array
     {
-        // قراءة اسم الـ URI الحالي
-        $uri = $this->path();
-
-        // تحديد الجدول واسم الحقل حسب وجود الكلمات
-        if (str_contains($uri, 'excuse')) {
-            $idField = 'excuse_id';
-            $table = 'excuses';
-        } else {
-            $idField = 'vacation_id';
-            $table = 'vacations';
-        }
-
         return [
-            $idField => "required|exists:{$table},id",
             'status' => 'required|string|in:approved,rejected',
         ];
     }

@@ -13,6 +13,15 @@ class ExcuseService
 {
     use  CheckRole;
 
+    public function getAllExcuses()
+    {
+        $allExcuses = Excuse::orderByDesc('start_date')->get();
+        return [
+            'message' => 'Showing all excuses because employee not found.',
+            'excuses' => ExcuseResource::collection($allExcuses),
+        ];
+    }
+
     public function getExcuseForEmployee($employee)
     {
         $startDate = Carbon::parse($employee->start_date);
@@ -87,9 +96,8 @@ class ExcuseService
         ];
     }
 
-    public function changeStatusExcuse($data)
+    public function changeStatusExcuse($data,$excuse)
     {
-        $excuse = $this->checkExcuse($data['excuse_id']);
         $authUser = Auth::user();
         $this->handleApprovalByUserRole($excuse, $authUser, $data['status']);
         return [

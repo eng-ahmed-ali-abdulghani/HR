@@ -46,21 +46,9 @@ Route::group(['middleware' => ["SetLang"]], function () {
         //leader
         Route::controller(LeaderController::class)->prefix('leader')->group(function () {
             Route::get('get-employees', 'getEmployees');
-            Route::post('change-status-vacation', 'changeStatusVacation');
-            Route::post('change-status-excuse', 'changeStatusExcuse');
-            Route::get('get-vacation/user/{id}', 'getVacationForUser');
-            Route::get('get-excuse/user/{id}', 'getExcuseForUser');
             Route::post('make-deduction', 'makeDeduction');
         });
 
-        // CEO
-        Route::controller(CeoController::class)->prefix('ceo')->group(function () {
-            Route::post('change-status-vacation', 'changeStatusVacation');
-            Route::post('change-status-excuse', 'changeStatusExcuse');
-            Route::get('get-vacation/user/{id}', 'getVacationForUser');
-            Route::get('get-excuse/user/{id}', 'getExcuseForUser');
-            Route::post('make-deduction', 'makeDeduction');
-        });
 
 
     });

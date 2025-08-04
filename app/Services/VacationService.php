@@ -13,6 +13,16 @@ class VacationService
 {
     use  CheckRole;
 
+
+    public function getAllVactions()
+    {
+        $vacations = Vacation::orderByDesc('start_date')->get();
+        return [
+            'message' => 'Showing all vacations because employee not found.',
+            'data' => VacationResource::collection($vacations),
+        ];
+    }
+
     public function getVactionForEmployee($employee)
     {
         $startDate = Carbon::parse($employee->start_date);
@@ -80,9 +90,8 @@ class VacationService
         return $this->response(200, __('messages.request_cancelled'));
     }
 
-    public function changeStatusVacation($data)
+    public function changeStatusVacation($data,$vacation)
     {
-        $vacation = $this->checkVacation($data['vacation_id']);
         $authUser = Auth::user();
         $this->handleApprovalByUserRole($vacation, $authUser, $data['status']);
         return $this->response(201, __('messages.request_approved'));
