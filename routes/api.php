@@ -30,7 +30,7 @@ Route::group(['middleware' => ["SetLang"]], function () {
         Route::get('home', [HomeController::class, 'home']);
 
         // Type
-        Route::get('get-type', [TypeController::class, 'GetType']);
+        Route::resource('type', TypeController::class);
 
         // Vacations
         Route::resource('vacation', VacationController::class);

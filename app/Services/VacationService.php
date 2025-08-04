@@ -18,6 +18,7 @@ class VacationService
     {
         $vacations = Vacation::orderByDesc('start_date')->get();
         return [
+            'code' => 200,
             'message' => 'Showing all vacations because employee not found.',
             'data' => VacationResource::collection($vacations),
         ];

@@ -12,11 +12,16 @@ class TypeController extends Controller
 {
     use ApiResponseHelper;
 
-    public function GetType(Request $request)
+    public function index(Request $request)
     {
         $request->validate(['type' => 'required|string|exists:types,type']);
         $types = Type::where('type', $request->type)->latest()->get();
-        return $this->setCode(200)->setMessage('Success')->setData(TypeResource::collection($types))->send();
+        $data = [
+            'code' => 200,
+            'message' => 'Get Data',
+            'data' => TypeResource::collection($types)
+        ];
+        return $this->setCode($data['code'])->setMessage($data['message'])->setData($data['data'])->send();
     }
 
 }

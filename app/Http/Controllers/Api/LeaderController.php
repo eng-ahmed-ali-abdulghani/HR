@@ -8,10 +8,7 @@ use App\Http\Requests\ChangeStatusRequest;
 use App\Http\Requests\DeductionRequest;
 use App\Http\Resources\UserResource;
 use App\Models\Department;
-use App\Models\User;
-use App\Services\DeductionService;
-use App\Services\ExcuseService;
-use App\Services\VacationService;
+
 use Illuminate\Support\Facades\Auth;
 
 class LeaderController extends Controller
@@ -55,15 +52,6 @@ class LeaderController extends Controller
     }
 
 
-    public function changeStatusExcuse(ChangeStatusRequest $request, ExcuseService $excuseService)
-    {
-        $data = $excuseService->changeStatusExcuse($request->validated());
-        return $this->setCode($data['code'])->setMessage($data['message'])->send();
-    }
 
-    public function makeDeduction(DeductionRequest $request, DeductionService $deductionService)
-    {
-        $data = $deductionService->makeDeduction($request->validated());
-        return $this->setCode($data['code'])->setMessage($data['message'])->send();
-    }
+
 }

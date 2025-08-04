@@ -5,8 +5,10 @@ namespace App\Http\Controllers\Api;
 
 use App\Helpers\ApiResponseHelper;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\DeductionRequest;
 use App\Http\Resources\DeductionResource;
 use App\Models\Deduction;
+use App\Services\DeductionService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
@@ -39,5 +41,9 @@ class DeductionController extends Controller
         ])->send();
     }
 
-
+    public function store(DeductionRequest $request, DeductionService $deductionService)
+    {
+        $data = $deductionService->makeDeduction($request->validated());
+        return $this->setCode($data['code'])->setMessage($data['message'])->send();
+    }
 }

@@ -24,8 +24,8 @@ class ExcuseController extends Controller
 
     public function index()
     {
-        $excuses = $this->excuseService->getAllExcuses();
-        return $this->setCode(200)->setMessage('Success')->setData($excuses)->send();
+        $data = $this->excuseService->getAllExcuses();
+        return $this->setCode($data['code'])->setMessage($data['message'])->setData($data['data'])->send();
     }
 
     public function store(StoreExcuseRequest $request)

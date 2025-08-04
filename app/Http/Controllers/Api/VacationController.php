@@ -24,7 +24,7 @@ class VacationController extends Controller
     public function index()
     {
         $data = $this->vacationService->getAllVactions();
-        return $this->setCode(200)->setMessage($data['message'])->setData($data['data'])->send();
+        return $this->setCode($data['code'])->setMessage($data['message'])->setData($data['data'])->send();
     }
 
     public function store(StoreVacationRequest $request)

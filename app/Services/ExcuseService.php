@@ -17,6 +17,7 @@ class ExcuseService
     {
         $allExcuses = Excuse::orderByDesc('start_date')->get();
         return [
+            'code' => 200,
             'message' => 'Showing all excuses because employee not found.',
             'excuses' => ExcuseResource::collection($allExcuses),
         ];
@@ -96,7 +97,7 @@ class ExcuseService
         ];
     }
 
-    public function changeStatusExcuse($data,$excuse)
+    public function changeStatusExcuse($data, $excuse)
     {
         $authUser = Auth::user();
         $this->handleApprovalByUserRole($excuse, $authUser, $data['status']);
@@ -119,9 +120,4 @@ class ExcuseService
         ];
     }
 
-    private function approve(Excuse $excuse, string $role)
-    {
-        $excuse["{$role}_status"] = 'approved';
-        $excuse["{$role}_id"] = Auth::id();
-    }
 }
