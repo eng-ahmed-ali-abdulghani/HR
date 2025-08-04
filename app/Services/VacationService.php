@@ -87,6 +87,17 @@ class VacationService
         ];
     }
 
+    public function changeStatusVacation($data, $id)
+    {
+        $vacation = $this->checkVacation($id);
+        if (is_array($vacation)) {
+            return $vacation;
+        }
+        $authUser = Auth::user();
+        $this->handleApprovalByUserRole($vacation, $authUser, $data['status']);
+        return $this->response(201, __('messages.request_approved'));
+    }
+
     public function cancelledVacation($id)
     {
         $vacation = $this->checkVacation($id);
@@ -98,18 +109,6 @@ class VacationService
         }
         $vacation->delete();
         return $this->response(200, __('messages.request_cancelled'));
-    }
-
-    public function changeStatusVacation($data, $id)
-    {
-        $vacation = $this->checkVacation($id);
-        if (is_array($vacation)) {
-            return $vacation;
-        }
-
-        $authUser = Auth::user();
-        $this->handleApprovalByUserRole($vacation, $authUser, $data['status']);
-        return $this->response(201, __('messages.request_approved'));
     }
 
     // ====== Helpers ======

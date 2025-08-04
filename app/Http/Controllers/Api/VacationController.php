@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Requests\ChangeStatusRequest;
-use App\Models\User;
 use App\Services\VacationService;
 use App\Helpers\ApiResponseHelper;
 use App\Http\Controllers\Controller;
