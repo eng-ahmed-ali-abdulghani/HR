@@ -23,6 +23,7 @@ Route::group(['middleware' => ["SetLang"]], function () {
         Route::post('user/update', [AuthController::class, 'update']);
         Route::get('user/profile', [AuthController::class, 'profile']);
         Route::get('user/logout', [AuthController::class, 'logout']);
+
         Route::get('get-users', [AuthController::class, 'getUsers']);
 
         //Home
@@ -48,7 +49,6 @@ Route::group(['middleware' => ["SetLang"]], function () {
             Route::get('get-employees', 'getEmployees');
             Route::post('make-deduction', 'makeDeduction');
         });
-
 
 
     });

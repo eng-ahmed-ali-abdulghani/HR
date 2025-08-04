@@ -6,12 +6,10 @@ namespace App\Http\Controllers\Api;
 use App\Http\Requests\ChangeStatusRequest;
 use App\Models\Excuse;
 use App\Models\User;
-use App\Models\Vacation;
 use App\Services\ExcuseService;
 use App\Helpers\ApiResponseHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\Excuses\StoreExcuseRequest;
-use Illuminate\Support\Facades\Auth;
 
 class ExcuseController extends Controller
 {

@@ -81,16 +81,14 @@ class VacationService
         if (is_array($vacation)) {
             return $vacation;
         }
-
         if ($vacation->ceo_status === 'approved') {
             return $this->response(403, __('messages.forbiden'));
         }
-
         $vacation->delete();
         return $this->response(200, __('messages.request_cancelled'));
     }
 
-    public function changeStatusVacation($data,$vacation)
+    public function changeStatusVacation($data, $vacation)
     {
         $authUser = Auth::user();
         $this->handleApprovalByUserRole($vacation, $authUser, $data['status']);
@@ -112,8 +110,7 @@ class VacationService
 
     private function calculateUsedDays($vacations)
     {
-        return $vacations->filter(fn($v) => $v->ceo_status === 'approved')
-            ->sum(fn($v) => $this->calculateVacationDays($v->start_date, $v->end_date));
+        return $vacations->filter(fn($v) => $v->ceo_status === 'approved')->sum(fn($v) => $this->calculateVacationDays($v->start_date, $v->end_date));
     }
 
     private function calculateVacationDays($startDate, $endDate)
