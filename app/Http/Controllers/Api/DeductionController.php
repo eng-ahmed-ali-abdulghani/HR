@@ -31,14 +31,12 @@ class DeductionController extends Controller
 
         $totalDeductionDays = $deductions->sum('deduction_days');
 
-        return $this->setCode(200)
-            ->setMessage('تم جلب الخصومات بنجاح')
-            ->setData([
-                'total_count' => $totalCount,
-                'monthly_count' => $monthlyCount,
-                'total_deduction_days' => $totalDeductionDays,
-                'deductions' => DeductionResource::collection($deductions),
-            ])->send();
+        return $this->setCode(200)->setMessage('تم جلب الخصومات بنجاح')->setData([
+            'total_count' => $totalCount,
+            'monthly_count' => $monthlyCount,
+            'total_deduction_days' => $totalDeductionDays,
+            'deductions' => DeductionResource::collection($deductions),
+        ])->send();
     }
 
 
