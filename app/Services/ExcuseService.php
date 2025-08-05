@@ -19,12 +19,20 @@ class ExcuseService
         return [
             'code' => 200,
             'message' => 'Showing all excuses because employee not found.',
-            'excuses' => ExcuseResource::collection($allExcuses),
+            'data' => ExcuseResource::collection($allExcuses),
         ];
     }
 
-    public function getExcuseForEmployee($employee)
+    public function getExcuseForEmployee($id)
     {
+        $employee = User::where('id', $id)->first();
+        if (!$employee) {
+            return [
+                'code' => 404,
+                'message' => __('messages.not_found'),
+                'data' => null,
+            ];
+        }
         $startDate = Carbon::parse($employee->start_date);
         $now = Carbon::now();
 
@@ -97,8 +105,10 @@ class ExcuseService
         ];
     }
 
-    public function changeStatusExcuse($data, $excuse)
+    public function changeStatusExcuse($data, $id)
     {
+        $excuse = $this->checkExcuse($id);
+        if (is_array($excuse)) return $excuse;
         $authUser = Auth::user();
         $this->handleApprovalByUserRole($excuse, $authUser, $data['status']);
         return [

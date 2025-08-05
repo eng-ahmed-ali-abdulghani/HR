@@ -36,21 +36,13 @@ class ExcuseController extends Controller
 
     public function show($id)
     {
-        $employee = User::where('id', $id)->first();
-        if (!$employee) {
-            return $this->setCode(404)->setMessage(__('messages.not_found'))->send();
-        }
-        $excuses = $this->excuseService->getExcuseForEmployee($employee);
+        $excuses = $this->excuseService->getExcuseForEmployee($id);
         return $this->setCode(200)->setMessage('Success')->setData($excuses)->send();
     }
 
     public function update(ChangeStatusRequest $request, $id)
     {
-        $excuse = Excuse::where('id', $id)->first();
-        if (!$excuse) {
-            return $this->setCode(404)->setMessage(__('messages.not_found'))->send();
-        }
-        $data = $this->excuseService->changeStatusExcuse($request->validated(), $excuse);
+        $data = $this->excuseService->changeStatusExcuse($request->validated(), $id);
         return $this->setCode($data['code'])->setMessage($data['message'])->send();
     }
 

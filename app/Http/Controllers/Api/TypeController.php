@@ -2,25 +2,25 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Resources\TypeResource;
-use App\Models\Type;
+use App\Http\Requests\GetTypeRequest;
 use App\Helpers\ApiResponseHelper;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Services\TypeService;
 
 class TypeController extends Controller
 {
     use ApiResponseHelper;
 
-    public function index(Request $request)
+    public $typeService;
+
+    public function __construct(TypeService $typeService)
     {
-        $request->validate(['type' => 'required|string|exists:types,type']);
-        $types = Type::where('type', $request->type)->latest()->get();
-        $data = [
-            'code' => 200,
-            'message' => 'Get Data',
-            'data' => TypeResource::collection($types)
-        ];
+        $this->typeService = $typeService;
+    }
+
+    public function index(GetTypeRequest $request)
+    {
+        $data = $this->typeService->getType($request->type);
         return $this->setCode($data['code'])->setMessage($data['message'])->setData($data['data'])->send();
     }
 
