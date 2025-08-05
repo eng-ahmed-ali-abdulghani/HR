@@ -19,7 +19,7 @@ class DatabaseSeeder extends Seeder
             TypeSeeder::class,
             VacationSeeder::class,
             DeductionSeeder::class,
-            AttendanceSeeder::class,
+        //    AttendanceSeeder::class,
 
         ]);
     }

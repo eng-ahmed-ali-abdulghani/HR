@@ -430,48 +430,6 @@
             gap: 15px;
         }
 
-        @media (max-width: 768px) {
-            .container {
-                padding: 15px;
-            }
-
-            .table {
-                width: 1200px;
-            }
-
-            .header h1 {
-                font-size: 2.2em;
-            }
-
-            .controls-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .btn-actions {
-                flex-direction: column;
-            }
-
-            .stats-grid {
-                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            }
-
-            .action-buttons {
-                flex-direction: column;
-                gap: 5px;
-            }
-
-            .btn-primary {
-                font-size: 12px;
-                padding: 6px 12px;
-            }
-
-            .date-range-container {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
-    <style>
-
         .container {
             text-align: center;
         }
@@ -687,13 +645,186 @@
             margin-top: 15px;
             text-align: center;
         }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            .table {
+                width: 1200px;
+            }
+
+            .header h1 {
+                font-size: 2.2em;
+            }
+
+            .controls-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .btn-actions {
+                flex-direction: column;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            }
+
+            .action-buttons {
+                flex-direction: column;
+                gap: 5px;
+            }
+
+            .btn-primary {
+                font-size: 12px;
+                padding: 6px 12px;
+            }
+
+            .date-range-container {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
+<style>
+    .success-message {
+        display: none;
+        background: linear-gradient(135deg, #d4edda, #c3e6cb);
+        color: #155724;
+        border: 1px solid #c3e6cb;
+        border-radius: 12px;
+        padding: 20px;
+        margin-top: 15px;
+        text-align: center;
+        box-shadow: 0 4px 12px rgba(39, 174, 96, 0.15);
+        animation: slideInDown 0.5s ease;
+    }
+
+    .error-message {
+        display: none;
+        background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+        border-radius: 12px;
+        padding: 20px;
+        margin-top: 15px;
+        text-align: center;
+        box-shadow: 0 4px 12px rgba(220, 53, 69, 0.15);
+        animation: slideInDown 0.5s ease;
+        max-height: 400px;
+        overflow-y: auto;
+    }
+
+    .error-message::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .error-message::-webkit-scrollbar-track {
+        background: rgba(0, 0, 0, 0.1);
+        border-radius: 4px;
+    }
+
+    .error-message::-webkit-scrollbar-thumb {
+        background: rgba(220, 53, 69, 0.3);
+        border-radius: 4px;
+    }
+
+    .error-message::-webkit-scrollbar-thumb:hover {
+        background: rgba(220, 53, 69, 0.5);
+    }
+
+    @keyframes slideInDown {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .stats-display {
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 8px;
+        padding: 10px;
+        margin-top: 10px;
+        text-align: left;
+    }
+
+    .error-details {
+        max-height: 300px;
+        overflow-y: auto;
+        background: rgba(0, 0, 0, 0.05);
+        border-radius: 8px;
+        padding: 15px;
+        margin-top: 15px;
+    }
+
+    .error-item {
+        background: rgba(255, 255, 255, 0.7);
+        border-radius: 6px;
+        padding: 10px;
+        margin-bottom: 10px;
+        border-left: 4px solid #dc3545;
+    }
+
+    .error-item:last-child {
+        margin-bottom: 0;
+    }
+
+    .error-row {
+        font-weight: bold;
+        color: #dc3545;
+        margin-bottom: 5px;
+    }
+
+    .error-details-text {
+        font-size: 12px;
+        color: #666;
+        margin-top: 5px;
+    }
+
+    /* Loading states */
+    .uploading .upload-area {
+        pointer-events: none;
+        opacity: 0.6;
+    }
+
+    .uploading .upload-text {
+        color: #007bff;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .modal-content {
+            width: 95%;
+            margin: 10% auto;
+        }
+
+        .error-message,
+        .success-message {
+            padding: 15px;
+            font-size: 14px;
+        }
+
+        .error-details {
+            padding: 10px;
+        }
+
+        .error-item {
+            padding: 8px;
+            font-size: 13px;
+        }
+    }
+</style>
     <div class="container">
         <!-- Header -->
         <div class="header">
             <h1><i class="fas fa-users"></i> عرض المستخدمين والحضور</h1>
             <p>عرض بيانات المستخدمين في النظام مع إمكانية الوصول لتفاصيل الحضور والغياب</p>
         </div>
+
         <!-- Statistics -->
         <div class="stats-grid">
             <div class="stat-card total">
@@ -701,28 +832,28 @@
                     <i class="fas fa-users"></i>
                 </div>
                 <div class="stat-title">إجمالي المستخدمين</div>
-                <div class="stat-value">{{ $stats['total_users'] ??null}}</div>
+                <div class="stat-value">{{ $stats['total_users'] ?? 0 }}</div>
             </div>
             <div class="stat-card checkin">
                 <div class="stat-icon">
                     <i class="fas fa-sign-in-alt"></i>
                 </div>
                 <div class="stat-title">تسجيل دخول اليوم</div>
-                <div class="stat-value">{{$stats['total_checkin']??null}}</div>
+                <div class="stat-value">{{ $stats['total_checkin'] ?? 0 }}</div>
             </div>
             <div class="stat-card checkout">
                 <div class="stat-icon">
                     <i class="fas fa-sign-out-alt"></i>
                 </div>
                 <div class="stat-title">تسجيل خروج اليوم</div>
-                <div class="stat-value">{{$stats['total_checkout']??null}}</div>
+                <div class="stat-value">{{ $stats['total_checkout'] ?? 0 }}</div>
             </div>
             <div class="stat-card absent">
                 <div class="stat-icon">
                     <i class="fas fa-user-times"></i>
                 </div>
                 <div class="stat-title">لم يسجل دخول</div>
-                <div class="stat-value">{{$stats['total_absent']??null}}</div>
+                <div class="stat-value">{{ $stats['total_absent'] ?? 0 }}</div>
             </div>
         </div>
 
@@ -739,6 +870,7 @@
                 </div>
                 <div class="modal-body">
                     <form id="uploadForm" enctype="multipart/form-data">
+                        @csrf
                         <div class="upload-area" onclick="triggerFileInput()" id="uploadArea">
                             <div class="upload-icon">📄</div>
                             <div class="upload-text">اضغط هنا لاختيار الملف</div>
@@ -788,7 +920,7 @@
                 <tbody id="dataTable">
                 @forelse($users as $user)
                     <tr>
-                        <td><strong style="color: #667eea; font-size: 18px;">#{{ $user->id }}</strong></td>
+                        <td><strong style="color: #667eea; font-size: 18px;">#{{ $user->fingerprint_employee_id }}</strong></td>
                         <td>
                             <div class="user-info">
                                 <div class="user-avatar">
@@ -818,18 +950,20 @@
                                 @if($hasCheckin)
                                     <span class="status-badge status-checkin">
                                         <i class="fas fa-sign-in-alt"></i> دخول
+                                         {{ \Carbon\Carbon::parse($todayAttendances->where('type', 'checkin')->first()->timestamp)->format('H:i') }}
                                     </span>
                                 @endif
 
                                 @if($hasCheckout)
                                     <span class="status-badge status-checkout">
-                                        <i class="fas fa-sign-out-alt"></i>   خروج
+                                        <i class="fas fa-sign-out-alt"></i> خروج
+                                          {{ \Carbon\Carbon::parse($todayAttendances->where('type', 'checkout')->first()->timestamp)->format('H:i') }}
                                     </span>
                                 @endif
 
                                 @if(!$hasCheckin && !$hasCheckout)
                                     <span class="status-badge status-absent">
-                                        <i class="fas fa-times"></i>       لم يسجل
+                                        <i class="fas fa-times"></i> لم يسجل
                                     </span>
                                 @endif
                             </div>
@@ -845,7 +979,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="5">
+                        <td colspan="4">
                             <div class="no-data">
                                 <i class="fas fa-users fa-4x"></i>
                                 <p>لا توجد مستخدمين مطابقين لمعايير البحث</p>
@@ -897,10 +1031,7 @@
         }
 
         function isValidExcelFile(file) {
-            const validTypes = [
-                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-                'application/vnd.ms-excel'
-            ];
+            const validTypes = ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel'];
             const validExtensions = ['.xlsx', '.xls'];
             const fileName = file.name.toLowerCase();
 
@@ -971,6 +1102,7 @@
         });
 
         // Form submission
+        // Form submission
         document.getElementById('uploadForm').addEventListener('submit', async (e) => {
             e.preventDefault();
 
@@ -1007,35 +1139,97 @@
                 const formData = new FormData();
                 formData.append('excel_file', selectedFile);
 
-                // هنا يمكنك تغيير الرابط إلى Laravel route الخاص بك
-                const response = await fetch('/attendance', {
+                // Get CSRF token
+                const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') ||
+                    document.querySelector('input[name="_token"]')?.value || '';
+
+                const response = await fetch('{{ route("attendance.store") }}', {
                     method: 'POST',
                     body: formData,
                     headers: {
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+                        'X-CSRF-TOKEN': csrfToken
                     }
                 });
 
                 clearInterval(progressInterval);
                 progressFill.style.width = '100%';
 
-                if (response.ok) {
-                    const result = await response.json();
-                    successMessage.style.display = 'block';
-                    successMessage.textContent = '✅ ' + (result.message || 'تم رفع الملف بنجاح!');
+                const result = await response.json();
 
-                    // إخفاء الموديل بعد 2 ثانية
+                if (response.ok) {
+                    // Success response
+                    successMessage.style.display = 'block';
+                    successMessage.innerHTML = `
+                <div style="text-align: center;">
+                    <strong>✅ ${result.message}</strong>
+                    ${result.stats ? `
+                        <div style="margin-top: 10px; font-size: 14px;">
+                            <div>📊 إحصائيات العملية:</div>
+                            <div>• سجلات جديدة: ${result.stats.success}</div>
+                            <div>• سجلات مكررة: ${result.stats.skipped}</div>
+                            <div>• أخطاء: ${result.stats.errors}</div>
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+
+                    // إعادة تحميل الصفحة بعد 3 ثواني
                     setTimeout(() => {
-                        closeModal();
-                    }, 2000);
+                        window.location.reload();
+                    }, 3000);
                 } else {
-                    throw new Error('فشل في رفع الملف');
+                    // Error response
+                    let errorHtml = `<div style="text-align: right;">❌ ${result.message}</div>`;
+
+                    if (result.errors && result.errors.length > 0) {
+                        errorHtml += `
+                    <div style="margin-top: 20px;">
+                        <strong>تفاصيل الأخطاء:</strong>
+                        <div style="max-height: 200px; overflow-y: auto; margin-top: 10px; background: rgba(255,255,255,0.1); padding: 6px; border-radius: 5px;">
+                `;
+
+                        result.errors.slice(0, 10).forEach(error => {
+                            errorHtml += `
+                        <div style="margin-bottom: 8px; padding: 5px; background: rgba(255,255,255,0.1); border-radius: 3px; font-size: 18px;">
+                            <strong>الصف ${error.row}:</strong> ${error.message}
+                            <br><small>رقم البصمة: ${error.fingerprint_id} | التاريخ: ${error.date} | النوع: ${error.type}</small>
+                        </div>
+                    `;
+                        });
+
+                        if (result.errors.length > 10) {
+                            errorHtml += `<div style="text-align: center; font-style: italic;">... و ${result.errors.length - 10} أخطاء أخرى</div>`;
+                        }
+
+                        errorHtml += `</div></div>`;
+                    }
+
+                    if (result.stats) {
+                        errorHtml += `
+                    <div style="margin-top: 10px; font-size: 14px;">
+                        <div>📊 إحصائيات العملية:</div>
+                        <div>• سجلات معالجة: ${result.stats.success}</div>
+                        <div>• سجلات مكررة: ${result.stats.skipped}</div>
+                        <div>• أخطاء: ${result.stats.errors}</div>
+                    </div>
+                `;
+                    }
+
+                    errorMessage.style.display = 'block';
+                    errorMessage.innerHTML = errorHtml;
                 }
             } catch (error) {
                 clearInterval(progressInterval);
                 progressFill.style.width = '0%';
                 errorMessage.style.display = 'block';
-                errorMessage.textContent = '❌ ' + (error.message || 'حدث خطأ أثناء رفع الملف');
+                errorMessage.innerHTML = `
+            <div style="text-align: center;">
+                ❌ خطأ في الاتصال بالخادم
+                <div style="margin-top: 10px; font-size: 14px; color: #666;">
+                    ${error.message || 'حدث خطأ غير متوقع'}
+                </div>
+            </div>
+        `;
             } finally {
                 uploadBtn.disabled = false;
                 uploadBtn.textContent = '📤 رفع الملف';
@@ -1045,13 +1239,19 @@
                 }, 1000);
             }
         });
-
         // Close modal when clicking outside
         window.onclick = function (event) {
             const modal = document.getElementById('uploadModal');
             if (event.target === modal) {
                 closeModal();
             }
+        }
+
+        // Function for viewing user details (you can implement this)
+        function viewUserDetails(userId) {
+            // يمكنك تنفيذ هذه الوظيفة حسب احتياجاتك
+            console.log('View details for user:', userId);
+            // مثال: window.location.href = '/attendance/user/' + userId;
         }
     </script>
 @endpush

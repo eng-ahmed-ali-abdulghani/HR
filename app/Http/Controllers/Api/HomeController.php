@@ -20,7 +20,7 @@ class HomeController extends Controller
 
     public function home()
     {
-        $data = $this->attendanceService->getAttendanceByUser(Auth::id());
+        $data = $this->attendanceService->getAttendanceByEmployee(Auth::id());
         return $this->setCode($data['code'])->setMessage($data['message'])->setData($data['data'])->send();
     }
 

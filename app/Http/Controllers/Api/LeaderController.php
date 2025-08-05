@@ -4,8 +4,6 @@ namespace App\Http\Controllers\Api;
 
 use App\Helpers\ApiResponseHelper;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\ChangeStatusRequest;
-use App\Http\Requests\DeductionRequest;
 use App\Http\Resources\UserResource;
 use App\Models\Department;
 
@@ -50,8 +48,6 @@ class LeaderController extends Controller
         return $this->setCode(201)->setMessage(__('messages.leader_employees_fetched'))->setData($data)->send();
 
     }
-
-
 
 
 }
