@@ -39,17 +39,17 @@
                     <li>
                         <hr class="dropdown-divider">
                     </li>
-{{--                    <li>
-                        <a class="dropdown-item" href="#">
-                            <i class="fas fa-user me-2"></i>
-                            الملف الشخصي
-                        </a>
-                    </li>--}}
+                    {{--                    <li>
+                                            <a class="dropdown-item" href="#">
+                                                <i class="fas fa-user me-2"></i>
+                                                الملف الشخصي
+                                            </a>
+                                        </li>--}}
                     <li>
                         <hr class="dropdown-divider">
                     </li>
                     <li>
-                        <form action="#" method="POST" class="d-inline">
+                        <form action="{{route('logout')}}" method="POST" class="d-inline">
                             @csrf
                             <button type="submit" class="dropdown-item text-danger">
                                 <i class="fas fa-sign-out-alt me-2"></i>

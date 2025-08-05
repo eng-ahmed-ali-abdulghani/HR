@@ -202,6 +202,12 @@ class AttendanceController extends Controller
                 throw new \Exception("Unable to parse date");
             }
 
+            if ($timestamp->greaterThan(Carbon::now())) {
+                return [
+                    'status' => 'error',
+                    'message' => "التاريخ لا يمكن أن يكون في المستقبل '{$dateString}' لرقم البصمة: {$fingerprint_employee_id}"
+                ];
+            }
         } catch (\Exception $e) {
             return [
                 'status' => 'error',
@@ -210,10 +216,7 @@ class AttendanceController extends Controller
         }
 
         // 4. التحقق من وجود نفس السجل مسبقًا
-        $exists = Attendance::where('employee_id', $user->id)
-            ->where('timestamp', $timestamp)
-            ->where('type', $formattedType)
-            ->exists();
+        $exists = Attendance::where('employee_id', $user->id)->where('timestamp', $timestamp)->where('type', $formattedType)->exists();
 
         if ($exists) {
             return [
