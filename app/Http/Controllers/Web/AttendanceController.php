@@ -14,10 +14,10 @@ use PhpOffice\PhpSpreadsheet\Reader\Exception;
 class AttendanceController extends Controller
 {
 
-    public function index(Request $request)
+    public function index()
     {
         // Build the users query with attendance data
-        $usersQuery = User::query()->select(['users.id','users.fingerprint_employee_id',  'users.name', 'users.email', 'users.created_at'])->with(['attendances']);
+        $usersQuery = User::query()->select(['users.id', 'users.fingerprint_employee_id', 'users.name', 'users.email', 'users.created_at'])->with(['attendances']);
         // Get paginated results
         $users = $usersQuery->paginate(3);
         // Calculate statistics for the filtered period
@@ -246,4 +246,57 @@ class AttendanceController extends Controller
     }
 
 
+    public function show($userId)
+    {
+        $user = User::findOrFail($userId);
+        // تجميع البيانات حسب التاريخ
+        $attendances = $user->attendances()->get()->groupBy(function ($item) {
+            return Carbon::parse($item->timestamp)->format('Y-m-d');
+        });
+        // حساب الإحصائيات
+        $attendanceStats = $this->calculateAttendanceStats2($user, $user->start_date->format('Y-m-d'), now()->format('Y-m-d'));
+
+        return view('dashboard.attendance.show', compact('user', 'attendances', 'attendanceStats'));
+    }
+
+    private function calculateAttendanceStats2($user, $dateFrom, $dateTo)
+    {
+        // جميع سجلات الحضور في الفترة
+        $allAttendances = $user->attendances()->whereDate('timestamp', '>=', $dateFrom)->whereDate('timestamp', '<=', $dateTo)->get();
+
+        // تجميع حسب التاريخ
+        $attendancesByDate = $allAttendances->groupBy(function ($item) {
+            return Carbon::parse($item->timestamp)->format('Y-m-d');
+        });
+
+        $totalDays = Carbon::parse($dateFrom)->diffInDays(Carbon::parse($dateTo)) + 1;
+        $presentDays = 0;
+        $totalWorkingHours = 0;
+
+        foreach ($attendancesByDate as $date => $dayAttendances) {
+            $hasCheckin = $dayAttendances->where('type', 'checkin')->isNotEmpty();
+            if ($hasCheckin) {
+                $presentDays++;
+                // حساب ساعات العمل
+                $checkin = $dayAttendances->where('type', 'checkin')->first();
+                $checkout = $dayAttendances->where('type', 'checkout')->first();
+
+                if ($checkin && $checkout) {
+                    $checkinTime = Carbon::parse($checkin->timestamp);
+                    $checkoutTime = Carbon::parse($checkout->timestamp);
+                    $totalWorkingHours += $checkoutTime->diffInHours($checkinTime);
+                }
+            }
+        }
+
+        $absentDays = $totalDays - $presentDays;
+        $avgHours = $presentDays > 0 ? round($totalWorkingHours / $presentDays, 1) : 0;
+
+        return [
+            'total_days' => $totalDays,
+            'present_days' => $presentDays,
+            'absent_days' => $absentDays,
+            'avg_hours' => $avgHours . 'ساعة',
+        ];
+    }
 }

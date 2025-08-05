@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Route;
 
 # ----------------- Admin Auth Routes -----------------
 Route::middleware('guest')->controller(AuthController::class)->group(function () {
-    Route::get('login', 'LoginForm')->name('login');
+    Route::get('/', 'LoginForm')->name('login');
     Route::post('login/submit', 'loginSubmit')->name('login.submit');
 });
 

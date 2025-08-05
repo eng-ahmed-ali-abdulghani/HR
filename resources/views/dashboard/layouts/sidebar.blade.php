@@ -27,11 +27,11 @@
         <ul class="nav-list">
             <li class="nav-item">
                 <a href="{{route('attendance.index')}}" class="nav-link ">
-                    <i class="fas fa-car"></i>
+                    <i class="fas fa-users"></i>
                     <span>  حضور الموظفين  </span>
                 </a>
             </li>
-
+        </ul>
     </nav>
 
     <!-- Sidebar Footer -->

@@ -970,10 +970,9 @@
                         </td>
                         <td>
                             <div class="action-buttons">
-                                <button class="btn btn-primary" onclick="viewUserDetails({{ $user->id }})"
-                                        title="عرض تفاصيل الحضور والغياب">
+                                <a href="{{route('attendance.show',$user->id )}}" class="btn btn-primary" title="عرض تفاصيل الحضور والغياب">
                                     <i class="fas fa-calendar-check"></i> التفاصيل
-                                </button>
+                                </a>
                             </div>
                         </td>
                     </tr>
