@@ -31,16 +31,16 @@ class DeductionService
         // مجموع أيام الخصم
         $totalDeductionDays = $deductions->sum('deduction_days');
 
-        return response()->json([
-            'code' => 200,
-            'message' => 'تم جلب الخصومات بنجاح',
-            'data' => [
+
+        return $this->response(201, __('messages.deduction_created'),
+            [
                 'total_count' => $totalCount,
                 'monthly_count' => $monthlyCount,
                 'total_deduction_days' => $totalDeductionDays,
                 'deductions' => DeductionResource::collection($deductions),
             ]
-        ]);
+        );
+
     }
 
     public function getDeductionByEmployee($employeeId)
@@ -53,16 +53,15 @@ class DeductionService
                 optional($deduction->created_at)->year === $now->year;
         })->count();
         $totalDeductionDays = $deductions->sum('deduction_days');
-        return [
-            'code' => 200,
-            'message' => 'تم جلب الخصومات بنجاح',
-            'data' => [
+
+        return $this->response(201, 'تم جلب الخصومات بنجاح',
+            [
                 'total_count' => $totalCount,
                 'monthly_count' => $monthlyCount,
                 'total_deduction_days' => $totalDeductionDays,
                 'deductions' => DeductionResource::collection($deductions),
             ]
-        ];
+        );
     }
 
     public function makeDeduction($data)
@@ -75,10 +74,30 @@ class DeductionService
             'submitted_by_id' => $authUser->id,
         ]);
         $this->handleApprovalByUserRole($deduction, $authUser, 'approved');
-        return [
-            'code' => 200,
-            'message' => __('messages.deduction_created'),
-            'data' => null,
-        ];
+
+        return $this->response(201, __('messages.deduction_created'));
+    }
+
+    public function cancelledDeduction($id)
+    {
+        $deduction = $this->checkDeduction($id);
+        if (is_array($deduction)) return $deduction;
+
+        if ($deduction->ceo_status === 'approved') {
+            return $this->response(403, __('messages.forbiden'));
+        }
+        $deduction->delete();
+        return $this->response(200, __('messages.request_cancelled'));
+    }
+
+    private function checkDeduction($id)
+    {
+        $deduction = Deduction::find($id);
+        return $deduction ?: $this->response(404, __('messages.not_found'));
+    }
+
+    private function response($code, $message, $data = null)
+    {
+        return compact('code', 'message', 'data');
     }
 }

@@ -47,7 +47,6 @@ Route::group(['middleware' => ["SetLang"]], function () {
         //leader
         Route::controller(LeaderController::class)->prefix('leader')->group(function () {
             Route::get('get-employees', 'getEmployees');
-            Route::post('make-deduction', 'makeDeduction');
         });
 
 

@@ -25,17 +25,21 @@ class DeductionController extends Controller
         return $this->setCode($data['code'])->setMessage($data['message'])->setData($data['data'])->send();
     }
 
-    public function show($employeeId)
-    {
-        $data = $this->deductionService->getDeductionByEmployee($employeeId);
-        return $this->setCode($data['code'])->setMessage($data['message'])->setData($data['data'])->send();
-    }
-
-
     public function store(DeductionRequest $request)
     {
         $data = $this->deductionService->makeDeduction($request->validated());
         return $this->setCode($data['code'])->setMessage($data['message'])->setData($data['data'])->send();
     }
 
+    public function show($employeeId)
+    {
+        $data = $this->deductionService->getDeductionByEmployee($employeeId);
+        return $this->setCode($data['code'])->setMessage($data['message'])->setData($data['data'])->send();
+    }
+
+    public function destroy($id)
+    {
+        $data = $this->deductionService->cancelledDeduction($id);
+        return $this->setCode($data['code'])->setMessage($data['message'])->setData($data['data'])->send();
+    }
 }

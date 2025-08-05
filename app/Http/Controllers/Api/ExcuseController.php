@@ -4,8 +4,6 @@ namespace App\Http\Controllers\Api;
 
 
 use App\Http\Requests\ChangeStatusRequest;
-use App\Models\Excuse;
-use App\Models\User;
 use App\Services\ExcuseService;
 use App\Helpers\ApiResponseHelper;
 use App\Http\Controllers\Controller;
