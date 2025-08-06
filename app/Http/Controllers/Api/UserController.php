@@ -4,15 +4,15 @@ namespace App\Http\Controllers\Api;
 
 use App\Helpers\ApiResponseHelper;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\UpdateUserRequest;
 use App\Http\Requests\StoreUserRequest;
+use App\Http\Requests\UpdateUserRequest;
 use App\Services\UserService;
 
 class UserController extends Controller
 {
     use ApiResponseHelper;
 
-    public $userService;
+    protected UserService $userService;
 
     public function __construct(UserService $userService)
     {
@@ -21,31 +21,33 @@ class UserController extends Controller
 
     public function index()
     {
-        $data = $this->userService->getAllUsers();
-        return $this->setCode($data['code'])->setMessage($data['message'])->setData($data['data'])->send();
+        $response = $this->userService->getAllUsers();
+        return $this->buildResponse($response);
     }
 
     public function store(StoreUserRequest $request)
     {
-        $data = $this->userService->storeUser($request->validated());
-        return $this->setCode($data['code'])->setMessage($data['message'])->setData($data['data'])->send();
+        $response = $this->userService->storeUser($request->validated());
+        return $this->buildResponse($response);
     }
 
     public function show($id)
     {
-        $data = $this->userService->getUserByID($id);
-        return $this->setCode($data['code'])->setMessage($data['message'])->setData($data['data'])->send();
+        $response = $this->userService->getUserByID($id);
+        return $this->buildResponse($response);
     }
 
     public function update(UpdateUserRequest $request, $id)
     {
-        $data = $this->userService->updateUser($request->validated(), $id);
-        return $this->setCode($data['code'])->setMessage($data['message'])->setData($data['data'])->send();
+        $response = $this->userService->updateUser($id, $request->validated());
+        return $this->buildResponse($response);
     }
 
     public function destroy($id)
     {
-        $data = $this->userService->destroy($id);
-        return $this->setCode($data['code'])->setMessage($data['message'])->setData($data['data'])->send();
+        $response = $this->userService->destroy($id);
+        return $this->buildResponse($response);
     }
+
+
 }

@@ -15,17 +15,20 @@ trait ApiResponseHelper
         $this->body['data'] = $data;
         return $this;
     }
+
     public function setcount($data)
     {
         $this->body['last_page'] = $data;
         return $this;
     }
+
     public function setPoints($data)
     {
         $this->body['points_value'] = $data;
         return $this;
     }
-        public function setUserPoints($data)
+
+    public function setUserPoints($data)
     {
         $this->body['user_points'] = $data;
         return $this;
@@ -45,6 +48,7 @@ trait ApiResponseHelper
         $this->body['message'] = $message;
         return $this;
     }
+
     public function setMessage($message)
     {
         $this->body['message'] = $message;
@@ -91,8 +95,17 @@ trait ApiResponseHelper
         return response()->json($collection, 200);
     }
 
-    // public function validate($inputs, $rules): \Illuminate\Validation\Validator
-    // {
-    //     return Validator::make($inputs, $rules);
-    // }
+    public function buildResponse(array $data)
+    {
+        return $this->setCode($data['code'])->setMessage($data['message'])->setData($data['data'] ?? null)->send();
+    }
+
+    public function response(int $code, string $message, $data = null): array
+    {
+        return [
+            'code' => $code,
+            'message' => $message,
+            'data' => $data,
+        ];
+    }
 }

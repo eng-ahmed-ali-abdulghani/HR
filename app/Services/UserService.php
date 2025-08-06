@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Helpers\ApiResponseHelper;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
@@ -9,10 +10,11 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class UserService
 {
+    use ApiResponseHelper;
+
     public function getAllUsers(): array
     {
         $users = User::latest()->get();
-
         return $this->response(200, 'Users retrieved successfully.', UserResource::collection($users));
     }
 
@@ -22,7 +24,6 @@ class UserService
             ...$data->except(['password']),
             'password' => Hash::make($data['password']),
         ]);
-
         return $this->response(201, 'User created successfully.', new UserResource($user->fresh()));
     }
 
@@ -58,12 +59,5 @@ class UserService
         }
     }
 
-    private function response(int $code, string $message, $data = null): array
-    {
-        return [
-            'code' => $code,
-            'message' => $message,
-            'data' => $data,
-        ];
-    }
+
 }
