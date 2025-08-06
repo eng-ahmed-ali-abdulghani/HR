@@ -7,7 +7,7 @@ use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-
+use Illuminate\Support\Arr;
 class UserService
 {
     use ApiResponseHelper;
@@ -21,7 +21,7 @@ class UserService
     public function storeUser($data): array
     {
         $user = User::create([
-            ...$data->except(['password']),
+            ...Arr::except($data, ['password']),
             'password' => Hash::make($data['password']),
         ]);
         return $this->response(201, 'User created successfully.', new UserResource($user->fresh()));

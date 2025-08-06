@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api;
 
 use App\Helpers\ApiResponseHelper;
 use App\Models\Department;
+use App\Services\DepartmentService;
+use App\Services\UserService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -12,20 +14,17 @@ class DepartmentController extends Controller
 {
     use ApiResponseHelper;
 
-    // Fetch all departments
-    public function index()
+    protected DepartmentService $departmentService;
+
+    public function __construct(DepartmentService $departmentService)
     {
-        $departments = Department::all();
-        return $this->setCode(200)->setMessage('Success')->setData($departments)->send();
+        $this->departmentService = $departmentService;
     }
 
-    // Fetch a specific department by ID
-    public function show($id)
+    public function index()
     {
-        $department = Department::with('users')->find($id);
-        if (!$department) {
-            return $this->setCode(404)->setMessage('Department not found')->send();
-        }
-        return $this->setCode(200)->setMessage('Success')->setData($department)->send();
+        $response = $this->departmentService->getAllDepartments();
+        return $this->buildResponse($response);
     }
+
 }

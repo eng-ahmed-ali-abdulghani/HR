@@ -9,7 +9,7 @@ use App\Http\Controllers\Api\{UserController,
     AuthController,
     LeaderController,
     TypeController,
-    AttendanceController,};
+    AttendanceController,DepartmentController};
 
 
 Route::group(['middleware' => ["SetLang"]], function () {
@@ -25,6 +25,9 @@ Route::group(['middleware' => ["SetLang"]], function () {
 
         // user
         Route::resource('users', UserController::class);
+
+        // Department
+        Route::resource('departments', DepartmentController::class);
 
         //Home
         Route::get('home', [HomeController::class, 'home']);
