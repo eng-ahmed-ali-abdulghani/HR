@@ -1,16 +1,15 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\{VacationController,
+use App\Http\Controllers\Api\{UserController,
+    VacationController,
     DeductionController,
     ExcuseController,
     HomeController,
     AuthController,
     LeaderController,
     TypeController,
-    AttendanceController,
-    CeoController
-};
+    AttendanceController,};
 
 
 Route::group(['middleware' => ["SetLang"]], function () {
@@ -24,7 +23,8 @@ Route::group(['middleware' => ["SetLang"]], function () {
         Route::get('user/profile', [AuthController::class, 'profile']);
         Route::get('user/logout', [AuthController::class, 'logout']);
 
-        Route::get('get-users', [AuthController::class, 'getUsers']);
+        // user
+        Route::resource('users', UserController::class);
 
         //Home
         Route::get('home', [HomeController::class, 'home']);

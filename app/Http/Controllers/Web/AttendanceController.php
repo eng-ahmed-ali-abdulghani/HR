@@ -19,7 +19,7 @@ class AttendanceController extends Controller
         // Build the users query with attendance data
         $usersQuery = User::query()->select(['users.id', 'users.fingerprint_employee_id', 'users.name', 'users.email', 'users.created_at'])->with(['attendances']);
         // Get paginated results
-        $users = $usersQuery->paginate(3);
+        $users = $usersQuery->paginate(5);
         // Calculate statistics for the filtered period
         $stats = $this->calculateAttendanceStats(Carbon::today(), Carbon::today(), null);
 

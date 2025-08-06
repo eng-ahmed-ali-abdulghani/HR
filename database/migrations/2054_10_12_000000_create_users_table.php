@@ -15,7 +15,7 @@ return new class extends Migration {
 
             // بيانات المستخدم الأساسية
             $table->string('name');
-            $table->string('username')->nullable()->unique();
+            $table->string('position')->nullable();
             $table->string('email')->nullable()->unique();
             $table->string('title')->nullable();
             $table->string('code')->unique(); // كود الموظف

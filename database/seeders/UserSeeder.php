@@ -42,7 +42,7 @@ class UserSeeder extends Seeder
         foreach ($names as $i => $name) {
             User::create([
                 'name' => $name,
-                'username' => 'user' . ($i + 1),
+                'position' => 'user' . ($i + 1),
                 'email' => 'user' . ($i + 1) . '@example.com',
                 'title' => 'موظف',
                 'code' => 'EMP' . str_pad($i + 1, 3, '0', STR_PAD_LEFT),
