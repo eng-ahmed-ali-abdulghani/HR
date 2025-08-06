@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use App\Models\Attendance;
+use App\Models\Company;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -17,19 +18,24 @@ class AttendanceController extends Controller
     public function index()
     {
         // Build the users query with attendance data
-        $usersQuery = User::query()->select(['users.id', 'users.fingerprint_employee_id', 'users.name', 'users.email', 'users.created_at'])->with(['attendances']);
+        $usersQuery = User::query()->whereNot(function ($query) {
+            $query->where('name', 'like', '%Employee%');
+        })->select(['users.id', 'users.fingerprint_employee_id', 'users.name', 'users.email', 'users.created_at'])->with(['attendances']);
         // Get paginated results
         $users = $usersQuery->paginate(5);
         // Calculate statistics for the filtered period
         $stats = $this->calculateAttendanceStats(Carbon::today(), Carbon::today(), null);
 
-        return view('dashboard.attendance.index', compact('users', 'stats'));
+        $companies = Company::all();
+        return view('dashboard.attendance.index', compact('users', 'stats', 'companies'));
     }
 
     private function calculateAttendanceStats($dateFrom, $dateTo, $search = null)
     {
         // Base query for users
-        $usersQuery = User::query();
+        $usersQuery = User::query()->whereNot(function ($query) {
+            $query->where('name', 'like', '%Employee%');
+        });
         $totalUsers = $usersQuery->count();
 
         // Users with check-in records
@@ -298,5 +304,26 @@ class AttendanceController extends Controller
             'absent_days' => $absentDays,
             'avg_hours' => $avgHours . 'ساعة',
         ];
+    }
+
+    public function company($id)
+    {
+        $company = Company::where('id', $id)->first();
+
+        $departmentIds = $company->departments()->pluck('id');
+
+        $usersQuery = User::query()
+            ->whereNot(function ($query) {
+                $query->where('name', 'like', '%Employee%');
+            })
+            ->whereIn('department_id', $departmentIds)
+            ->select(['users.id', 'users.fingerprint_employee_id', 'users.name', 'users.email', 'users.created_at'])
+            ->with(['attendances']);
+
+        $users = $usersQuery->paginate(5);
+        // Calculate statistics for the filtered period
+        $stats = $this->calculateAttendanceStats(Carbon::today(), Carbon::today(), null);
+
+        return view('dashboard.attendance.company_users', compact('users', 'stats'));
     }
 }

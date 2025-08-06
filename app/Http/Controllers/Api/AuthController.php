@@ -36,7 +36,7 @@ class AuthController extends Controller
     public function update(UpdateUserRequest $request, UserService $userService)
     {
         try {
-            $user = $userService->update($request);
+            $user = $userService->updateAuthUser($request);
             return $this->setCode(200)->setMessage(__('auth.update success'))->setData(new UserResource($user))->send();
         } catch (ModelNotFoundException $exception) {
             return $this->setCode(404)->setMessage(__('auth.user not found'))->send();

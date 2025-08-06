@@ -857,20 +857,9 @@
             </div>
         </div>
 
-{{--        <div class="stats-grid">
-            @foreach($companies as $company)
-                <a href="{{route('company',$company->id)}}">
-                    <div class="stat-card absent">
-                        <div class="stat-value">{{ $company->name }}</div>
-                    </div>
-                </a>
-            @endforeach
-        </div>--}}
-
         <div class="container">
             <button class="upload-btn" onclick="openModal()">📊 رفع ملف الحضور و الغياب</button>
         </div>
-
 
         <!-- Modal -->
         <div id="uploadModal" class="modal">

@@ -16,6 +16,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 
     Route::resource('attendance', AttendanceController::class);
+    Route::get('attendance/company/{id}', [AttendanceController::class, 'company'])->name('company');
 
 });
 

@@ -4,10 +4,7 @@ namespace App\Http\Controllers\Api;
 
 
 use App\Helpers\ApiResponseHelper;
-use App\Models\Department;
 use App\Services\DepartmentService;
-use App\Services\UserService;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 class DepartmentController extends Controller

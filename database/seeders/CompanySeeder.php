@@ -14,8 +14,10 @@ class CompanySeeder extends Seeder
     public function run(): void
     {
         $companies = [
-                ['ar' => 'HIS', 'en' => ' HIS '],
-            ['ar' => 'شركة المصدر للتقنية و المعلومات ', 'en' => 'SIT'],
+            ['ar' => 'HIS', 'en' => ' HIS'],
+            ['ar' => 'ERP ', 'en' => 'ERP'],
+            ['ar' => 'Social Media ', 'en' => 'Social Media'],
+
         ];
 
         foreach ($companies as $index => $names) {
