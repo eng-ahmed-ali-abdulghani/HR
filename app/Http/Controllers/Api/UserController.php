@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Helpers\ApiResponseHelper;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\UpdateUserRequest;
 use App\Http\Requests\StoreUserRequest;
 use App\Services\UserService;
 
@@ -36,4 +37,15 @@ class UserController extends Controller
         return $this->setCode($data['code'])->setMessage($data['message'])->setData($data['data'])->send();
     }
 
+    public function update(UpdateUserRequest $request, $id)
+    {
+        $data = $this->userService->updateUser($request->validated(), $id);
+        return $this->setCode($data['code'])->setMessage($data['message'])->setData($data['data'])->send();
+    }
+
+    public function destroy($id)
+    {
+        $data = $this->userService->destroy($id);
+        return $this->setCode($data['code'])->setMessage($data['message'])->setData($data['data'])->send();
+    }
 }

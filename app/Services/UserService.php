@@ -2,50 +2,68 @@
 
 namespace App\Services;
 
-
 use App\Http\Resources\UserResource;
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class UserService
 {
-
-    public function getAllUsers()
+    public function getAllUsers(): array
     {
         $users = User::latest()->get();
-        return [
-            'code' => 200,
-            'message' => 'Get Data Successful',
-            'date' => UserResource::collection($users),
-        ];
+
+        return $this->response(200, 'Users retrieved successfully.', UserResource::collection($users));
     }
 
-    public function storeUser($data)
+    public function storeUser($data): array
     {
-        User::create([
+        $user = User::create([
             ...$data->except(['password']),
             'password' => Hash::make($data['password']),
         ]);
-        return [
-            'code' => 201,
-            'message' => 'Create User Successful',
-            'data' => null,
-        ];
+
+        return $this->response(201, 'User created successfully.', new UserResource($user->fresh()));
     }
 
-    public function getUserByID($id)
+    public function getUserByID($id): array
     {
-        $user = User::find($id);
-        if (!$user) {
-            return [
-                'code' => 404,
-                'message' => ' User Not Found',
-                'data' => null,
-            ];
+        try {
+            $user = User::findOrFail($id);
+            return $this->response(200, 'User retrieved successfully.', new UserResource($user));
+        } catch (ModelNotFoundException) {
+            return $this->response(404, 'User not found.');
         }
+    }
+
+    public function updateUser($id, $data): array
+    {
+        try {
+            $user = User::findOrFail($id);
+            $user->update($data);
+            return $this->response(200, 'User updated successfully.', new UserResource($user->fresh()));
+        } catch (ModelNotFoundException) {
+            return $this->response(404, 'User not found.');
+        }
+    }
+
+    public function destroy($id): array
+    {
+        try {
+            $user = User::findOrFail($id);
+            $user->delete();
+            return $this->response(200, 'User deleted successfully.');
+        } catch (ModelNotFoundException) {
+            return $this->response(404, 'User not found.');
+        }
+    }
+
+    private function response(int $code, string $message, $data = null): array
+    {
         return [
-            'code' => 201,
-            'message' => 'Get User Successful',
-            'data' => new UserResource($user),
+            'code' => $code,
+            'message' => $message,
+            'data' => $data,
         ];
     }
 }
